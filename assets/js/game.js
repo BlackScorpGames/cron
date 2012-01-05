@@ -1,5 +1,5 @@
 window.onload = function(){
-    Crafty.init();
+    Crafty.init(800,600);
     Crafty.canvas.init();
     Crafty.sprite(60,50,"assets/img/Ships_1.png",{
         ship1 : [0,0],
@@ -14,7 +14,7 @@ window.onload = function(){
            init:function(){
                this.requires("Collision").
                    attr({
-                   x:Crafty.viewport.width/2,
+                   x:Crafty.viewport.width/2-this.w/2,
                    y:Crafty.viewport.height-this.h-100
                    });
            } 
