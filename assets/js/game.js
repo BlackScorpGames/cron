@@ -8,10 +8,50 @@ window.onload = function(){
         shadow_ship2: [1,1]
     });
     Crafty.scene("game",function(){
-        Crafty.background("url(assets/img/dunes_simple.jpg)");
-        Crafty.c("Player",{});
-        console.log(Crafty.viewport);
-        Crafty.e("2D,Canvas,ship1").attr({x:Crafty.viewport.width/2,y:Crafty.viewport.height});
+        
+        
+        Crafty.c("Player",{
+           init:function(){
+               this.requires("Collision").
+                   attr({
+                   x:Crafty.viewport.width/2,
+                   y:Crafty.viewport.height-this.h-100
+                   });
+           } 
+        });
+        Crafty.c("BackGround",{
+            init:function(){
+                this.image('assets/img/dunes_simple.jpg','repeat')
+                .attr({x:0,w:Crafty.viewport.width,h:Crafty.viewport.height});
+            }
+        })
+       
+        var bg = {
+            0:Crafty.e("2D,Canvas,Image,BackGround").attr({y:0}),
+            1:Crafty.e("2D,Canvas,Image,BackGround").attr({y:-Crafty.viewport.height}),
+            2:Crafty.e("2D,Canvas,Image,BackGround").attr({y:-Crafty.viewport.height*2})
+        },last=0;
+         var player = Crafty.e("2D,Canvas,ship1,Player,Collision");
+        
+        
+        Crafty.bind("EnterFrame",function(){
+            
+            Crafty.viewport.y += 1;
+            player.y -= 1;
+           if(Crafty.viewport.y % Crafty.viewport.height == 0){
+              
+              
+               
+               bg[last].y = -Crafty.viewport.y-Crafty.viewport.height;
+               
+               if(last < bg.length){
+                   last = 0;
+               }else{
+                   last++; 
+               }
+            
+           }
+        })
     });
     Crafty.scene("game");
 }
