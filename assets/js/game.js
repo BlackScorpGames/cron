@@ -13,6 +13,7 @@ window.onload = function(){
     Crafty.scene("game",function(){
         
         var area = 50;
+        Crafty.background('url(assets/img/dunes_simple.jpg)');
         Crafty.c("Player",{
             init:function(){
                 
@@ -67,46 +68,17 @@ window.onload = function(){
             }
 
         });
-        Crafty.c("BackGround",{
-            init:function(){
-                this.image('assets/img/dunes_simple.jpg','repeat')
-                .attr({
-                    x:0,
-                    w:Crafty.viewport.width,
-                    h:Crafty.viewport.height
-                })
-            }
-        })
+        
        
-        var bg = {
-            0:Crafty.e("2D,Canvas,Image,BackGround").attr({
-                y:0
-            }),
-            1:Crafty.e("2D,Canvas,Image,BackGround").attr({
-                y:-Crafty.viewport.height
-            }),
-            2:Crafty.e("2D,Canvas,Image,BackGround").attr({
-                y:-Crafty.viewport.height*2
-            })
-        },last=0;
+     
         var player = Crafty.e("2D,Canvas,ship1,Player,Collision,RightControls").rightControls(5);
         
-        
+        var speed = 1;
         Crafty.bind("EnterFrame",function(){
-            
             Crafty.viewport.y += 1;
             player.y -= 1;
-            
-            if(Crafty.viewport.y % Crafty.viewport.height == 0){  
-                if(typeof last == undefined) console.log(last);
-                bg[last].y = -Crafty.viewport.y-Crafty.viewport.height; 
-                
-                if(last < bg.length){
-                    last = 0;
-                }else{
-                    last++; 
-                }
-            }
+            Crafty.stage.elem.style.backgroundPosition ="0px "+(Crafty.viewport.y)+"px";
+           
         })
     });
     Crafty.scene("game");
