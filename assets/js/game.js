@@ -47,7 +47,7 @@ window.onload = function(){
             },
             move:function(speed){
                 this.y +=speed;
-                if(this.y < 0) this.destroy();
+                if(this.y > Crafty.viewport.height) this.destroy();
             },
             hurt:function(){
                 this._hp -=1;
