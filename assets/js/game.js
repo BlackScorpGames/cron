@@ -26,6 +26,7 @@ window.onload = function(){
         Crafty.background('url(assets/img/bg.jpg)');
         Crafty.c("Enemy",{
             _hp:2,
+            _dmg:{},
             init:function(){
                 this.requires("Collision")
                 .origin("center")
@@ -35,13 +36,35 @@ window.onload = function(){
                 })
                 .bind('EnterFrame',function(frame){
                     this.move(2);
-                    var collision = this.hit("bullet"),bullet;
-                    if(collision){
-                        bullet = collision[0].obj;
+                    var bulletCollision = this.hit("bullet"),bullet,playerCollision = this.hit("Player"),player;
+                  
+                    if(bulletCollision){
+                        bullet = bulletCollision[0].obj;
                         this.hurt();
-                       // var dmg = Crafty.e("2D,Canvas,dmg").attr({x:bullet.x,y:bullet.y});
-                         bullet.destroy(); 
+                        this._dmg[frame.frame+10] = Crafty.e("2D,Canvas,dmg").attr({
+                            x:bullet.x,
+                            y:bullet.y
+                        });
+                        bullet.destroy(); 
                     }
+                    if(playerCollision){
+                        player = playerCollision[0].obj;
+                        player.hurt(this._hp);
+                        this.die();
+                        
+                        this._dmg[frame.frame+10] = Crafty.e("2D,Canvas,dmg").attr({
+                            x:this.x,
+                            y:this.y
+                        });
+
+                    }
+                    for(var i in this._dmg){
+                        if(frame.frame >= i){
+                            this._dmg[i].destroy();
+                            delete this._dmg[i];
+                        } 
+                    }
+                   
                 });
                 return this;
             },
@@ -58,12 +81,20 @@ window.onload = function(){
             }
         });
         Crafty.c("Player",{
+            _hp:100,
+            _movingSpeed:5,
+            _charge:0,
             init:function(){
                 var keyDown = false;
-                this.requires("Keyboard,Collision").
+                this.requires("Multiway,Keyboard,Collision").
                 attr({
                     x:Crafty.viewport.width/2-this.w/2,
                     y:Crafty.viewport.height-this.h-100
+                }).multiway(this._movingSpeed, {
+                    UP_ARROW: -90, 
+                    DOWN_ARROW: 90, 
+                    RIGHT_ARROW: 0, 
+                    LEFT_ARROW: 180
                 }).bind('Moved', function(from) {
                     if(this.x+this.w/2+area > Crafty.viewport.width || this.x+this.w/2-area < 0 || this.y+this.h-area + Crafty.viewport.y <0 || this.y+this.h/2+area + Crafty.viewport.y > Crafty.viewport.height){
                         this.attr({
@@ -102,37 +133,23 @@ window.onload = function(){
                         this.destroy();
                     }
                 });
-            }
-        });
-        Crafty.c("RightControls", {
-            init: function() {
-                this.requires('Multiway');
             },
-            rightControls: function(speed) {
-                this.multiway(speed, {
-                    UP_ARROW: -90, 
-                    DOWN_ARROW: 90, 
-                    RIGHT_ARROW: 0, 
-                    LEFT_ARROW: 180
-                })
-                return this;
+            hurt:function(dmg){
+                this._hp -= dmg;
+                
             }
-
         });
+
         
         var spotEnemys = function(){
-            
             var enemy = Crafty.e("2D,Canvas,ship2,Enemy,Collision");
             var left = Crafty.math.randomInt(enemy.w,Crafty.viewport.width - enemy.w);
             enemy.attr({
                 x:left
-            });
-               
+            });         
         }
      
-        var player = Crafty.e("2D,Canvas,ship1,Player,Collision,RightControls").rightControls(5);
-       
-  
+        var player = Crafty.e("2D,Canvas,ship1,Player,Collision");
         var scroll = 0;
         Crafty.bind("EnterFrame",function(frame){
             scroll += 1;
