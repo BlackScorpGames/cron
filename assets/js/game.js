@@ -81,9 +81,13 @@ window.onload = function(){
             }
         });
         Crafty.c("Player",{
-            _hp:100,
+            _hp:10,
+            _lives:3,
             _movingSpeed:5,
-            _charge:0,
+            _heatLevel:{
+                current:0,
+                max:100
+            },
             init:function(){
                 var keyDown = false;
                 this.requires("Multiway,Keyboard,Collision").
@@ -111,32 +115,51 @@ window.onload = function(){
                         keyDown = false;
                     } 
                 }).bind("EnterFrame",function(frame){
+                    
                     if(keyDown && (frame.frame % 10 == 0)){
+                        this._heatLevel.current +=3;
                         this.shoot();
                     }
+                    if(this._heatLevel.current > 0 && (frame.frame % 10 == 0))
+                        this._heatLevel.current--;
+                    if(this._heatLevel.current >= this._heatLevel.max)
+                        this._heatLevel.current=this._heatLevel.max;
+                   
                 });
             },
             shoot:function(){
-                Crafty.e("2D, Canvas, bullet")
-                .attr({
-                    x: this._x+this._w/2,
-                    y: this._y-this._h/2,
-                    rotation: this._rotation,
-                    xspeed: 20 * Math.sin(this._rotation / 57.3),
-                    yspeed: 20 * Math.cos(this._rotation / 57.3)
-                })
-                .bind("EnterFrame", function() {
-                    //this.x += this.xspeed;
-                    this.y -= this.yspeed; 
-                    //destroy if it goes out of bounds
-                    if( this._y > Crafty.viewport.height || this._y < 0) {
-                        this.destroy();
-                    }
-                });
+                if(this._heatLevel.current < this._heatLevel.max){
+                    Crafty.e("2D, Canvas, bullet")
+                    .attr({
+                        x: this._x+this._w/2,
+                        y: this._y-this._h/2,
+                        rotation: this._rotation,
+                        xspeed: 20 * Math.sin(this._rotation / 57.3),
+                        yspeed: 20 * Math.cos(this._rotation / 57.3)
+                    })
+                    .bind("EnterFrame", function() {
+                        //this.x += this.xspeed;
+                        this.y -= this.yspeed; 
+                        //destroy if it goes out of bounds
+                        if( this._y > Crafty.viewport.height || this._y < 0) {
+                            this.destroy();
+                        }
+                    });   
+                }
             },
-            hurt:function(dmg){
+            hurt:function(dmg){        
                 this._hp -= dmg;
-                
+                if(this._hp <= 0)
+                    this.die();
+            },
+            die:function(){
+                this._lives--;
+                this._hp = 10;
+                if(this._lives <= 0){
+                    this.destroy();
+                    
+                }
+                   
             }
         });
 
