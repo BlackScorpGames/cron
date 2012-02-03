@@ -1,5 +1,5 @@
 window.onload = function(){
-    Crafty.init();
+    Crafty.init(640,480);
     Crafty.canvas.init();
     Crafty.sprite(57,44,"assets/img/ship1.png",{
         ship1:[0,0]
@@ -16,24 +16,45 @@ window.onload = function(){
     Crafty.sprite(11,28,"assets/img/bullet.png",{
         bullet:[0,0] 
     });
+    Crafty.sprite(29,"assets/img/dmg.png",{
+        dmg:[0,0]
+    });
    
     Crafty.scene("game",function(){
         
         var area = 50;
         Crafty.background('url(assets/img/bg.jpg)');
         Crafty.c("Enemy",{
+            _hp:2,
             init:function(){
                 this.requires("Collision")
+                .origin("center")
                 .attr({
+                    y:0,
                     rotation:180
-                }).bind('Moved', function() {
-                    this._y += 1; 
-                }).origin("center");
+                })
+                .bind('EnterFrame',function(frame){
+                    this.move(2);
+                    var collision = this.hit("bullet"),bullet;
+                    if(collision){
+                        bullet = collision[0].obj;
+                        this.hurt();
+                       // var dmg = Crafty.e("2D,Canvas,dmg").attr({x:bullet.x,y:bullet.y});
+                         bullet.destroy(); 
+                    }
+                });
                 return this;
             },
-            move:function(){
-                this.trigger("Moved");
-               
+            move:function(speed){
+                this.y +=speed;
+                if(this.y < 0) this.destroy();
+            },
+            hurt:function(){
+                this._hp -=1;
+                if(this._hp == 0) this.die();
+            },
+            die:function(){
+                this.destroy();
             }
         });
         Crafty.c("Player",{
@@ -99,18 +120,26 @@ window.onload = function(){
 
         });
         
-       
+        var spotEnemys = function(){
+            
+            var enemy = Crafty.e("2D,Canvas,ship2,Enemy,Collision");
+            var left = Crafty.math.randomInt(enemy.w,Crafty.viewport.width - enemy.w);
+            enemy.attr({
+                x:left
+            });
+               
+        }
      
         var player = Crafty.e("2D,Canvas,ship1,Player,Collision,RightControls").rightControls(5);
-        var enemy = Crafty.e("2D,Canvas,ship2,Enemy,Collision");
-        var speed = 1;
+       
+  
         var scroll = 0;
         Crafty.bind("EnterFrame",function(frame){
             scroll += 1;
-            enemy.trigger("Moved");
+            if(frame.frame % 50 == 0)
+                spotEnemys();
             Crafty.stage.elem.style.backgroundPosition ="0px "+scroll+"px";
-            
-        })
+        });
     });
     Crafty.scene("game");
 }
