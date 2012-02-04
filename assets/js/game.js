@@ -1,4 +1,4 @@
-window.onload = function(){
+$(function(){
     Crafty.init(640,480);
     Crafty.canvas.init();
     Crafty.sprite(57,44,"assets/img/ship1.png",{
@@ -19,9 +19,9 @@ window.onload = function(){
     Crafty.sprite(29,"assets/img/dmg.png",{
         dmg:[0,0]
     });
-   
+  
     Crafty.scene("game",function(){
-        
+        Crafty.canvas._canvas.style.zIndex = '1';
         var area = 50;
         Crafty.background('url(assets/img/bg.jpg)');
         Crafty.c("Enemy",{
@@ -81,7 +81,10 @@ window.onload = function(){
             }
         });
         Crafty.c("Player",{
-            _hp:10,
+            _hp:{
+                current:10,
+                max:10
+            },
             _lives:3,
             _movingSpeed:5,
             _heatLevel:{
@@ -90,17 +93,18 @@ window.onload = function(){
             },
             init:function(){
                 var keyDown = false;
+                var heatLevel = $( ".heat" ).progressbar({
+                    value: this._heatLevel.current/this._heatLevel.max * 100
+                });
                 this.requires("Multiway,Keyboard,Collision").
-                attr({
-                    x:Crafty.viewport.width/2-this.w/2,
-                    y:Crafty.viewport.height-this.h-100
-                }).multiway(this._movingSpeed, {
+                reset()
+                .multiway(this._movingSpeed, {
                     UP_ARROW: -90, 
                     DOWN_ARROW: 90, 
                     RIGHT_ARROW: 0, 
                     LEFT_ARROW: 180
                 }).bind('Moved', function(from) {
-                    if(this.x+this.w/2+area > Crafty.viewport.width || this.x+this.w/2-area < 0 || this.y+this.h-area + Crafty.viewport.y <0 || this.y+this.h/2+area + Crafty.viewport.y > Crafty.viewport.height){
+                    if(this.x+this.w/2+area > Crafty.viewport.width || this.x+this.w/2-area < 0 || this.y+this.h/2-area + Crafty.viewport.y <0 || this.y+this.h/2+area + Crafty.viewport.y > Crafty.viewport.height){
                         this.attr({
                             x:from.x, 
                             y:from.y
@@ -124,10 +128,13 @@ window.onload = function(){
                         this._heatLevel.current--;
                     if(this._heatLevel.current >= this._heatLevel.max)
                         this._heatLevel.current=this._heatLevel.max;
-                   
+                    heatLevel.progressbar({
+                        value: this._heatLevel.current/this._heatLevel.max * 100
+                    });
                 });
             },
             shoot:function(){
+                
                 if(this._heatLevel.current < this._heatLevel.max){
                     Crafty.e("2D, Canvas, bullet")
                     .attr({
@@ -148,16 +155,42 @@ window.onload = function(){
                 }
             },
             hurt:function(dmg){        
-                this._hp -= dmg;
-                if(this._hp <= 0)
+                this._hp.current -= dmg;
+                $( ".hp" ).progressbar({
+                    value: this._hp.current/this._hp.max * 100
+                });
+                if(this._hp.current <= 0)
                     this.die();
             },
+            reset:function(){
+               
+                
+                this.attr({
+                    _hp:{
+                        current:10,
+                        max:10
+                    },
+                    x:Crafty.viewport.width/2-this.w/2,
+                    y:Crafty.viewport.height-this.h-100,
+                    _heatLevel:{
+                        current:0,
+                        max:100
+                    }
+                });
+                $( ".hp" ).progressbar({
+                    value: this._hp.current/this._hp.max * 100
+                });
+                $( ".heat" ).progressbar({
+                    value: this._heatLevel.current/this._heatLevel.max * 100
+                });
+                return this;
+            },
             die:function(){
-                this._lives--;
-                this._hp = 10;
+                this._lives --;
+                this.reset();
+                $('.lives span').text('x'+this._lives);
                 if(this._lives <= 0){
-                    this.destroy();
-                    
+                    this.destroy(); 
                 }
                    
             }
@@ -182,4 +215,4 @@ window.onload = function(){
         });
     });
     Crafty.scene("game");
-}
+});

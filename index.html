@@ -1,28 +1,36 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8" />
         <title>Deser Rescue</title>
         <script type="text/javascript" src="http://cdn.crafty-modules.com/crafty-DEBUG.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
         <script type="text/javascript" src="assets/js/game.js"></script>
-        <meta charset="UTF-8" />
-        <style>
-            *{
-                margin:0px;
-                padding:0px;
-            }
-            #cr-stage{
-                margin:auto;
-            }
-            .info{
-                text-align: center;
-            }
-        </style>
+        <link type="text/css" href="assets/css/style.css" rel="stylesheet" /> 
     </head>
     <body>
         <div class="info"><h1>Desert Rescue</h1>
-        <p>Small Canvas shooter based on <a href="http://craftyjs.com">Crafty</a></p>
-        <p>User Arrow Keys to move, Space to shoot</p>
+            <p>Small Canvas shooter based on <a href="http://craftyjs.com">Crafty</a></p>
+            <p>Use Arrow Keys to move, Space to shoot</p>
         </div>
-        <div id="cr-stage"></div>
+        <div id="cr-stage">
+            <div id="interface">
+                <div class="panel transparent"></div>
+                <div class="panel">
+                    <div class="lives">
+                        <img src="assets/img/ship1.png" height="30"> <span>x3</span>
+                    </div>
+                    <div class="level">Level: 1</div>
+                    <div class="points">Points : 0</div>
+                </div>
+                 <div class="panel transparent bottom"></div>
+                <div class="panel bottom">
+                    <div class="hp"></div>
+                    <div class="heat"></div>
+                </div>
+            </div>
+        </div>
+
     </body>
 </html>
