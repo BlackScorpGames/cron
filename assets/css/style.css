@@ -3,7 +3,9 @@
     padding:0px;
 }
 #cr-stage{
-    margin:auto;
+    position: absolute;
+    left:50%;
+    margin-left:-320px;
 }
 .info{
     text-align: center;
@@ -38,6 +40,7 @@
 #interface .panel div{
     position: absolute;
     line-height: 35px;
+    color:#ffffff;
 }
 div.lives span{
     height:100%;
@@ -52,6 +55,7 @@ div.level{
     right: 15px;
     text-align: center;
 }
+
 .hp{
     width:48%;
     height:30px;
@@ -65,6 +69,14 @@ div.level{
 }
 .ui-progressbar-value{
     display: block;
-    background: red;
     height:100%;
+    background: green;
+}
+.overheated,.gameover{
+    font-size: 30px;
+    color:red;
+    width:100%;
+    line-height: 480px;
+    display:block;
+    text-align: center;
 }

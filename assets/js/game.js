@@ -1,29 +1,58 @@
 $(function(){
     Crafty.init(640,480);
     Crafty.canvas.init();
-    Crafty.sprite(57,44,"assets/img/ship1.png",{
-        ship1:[0,0]
+    Crafty.sprite("assets/img/ships.png",{
+        //Gold
+        ship1:[0,0,44,47],
+        ship2:[47,0,40,47],
+        ship3:[88,0,47,47],
+        ship4:[140,0,47,47],
+        ship5:[190,0,45,47],
+        ship6:[241,0,40,47],
+        ship7:[290,0,40,47],
+        ship8:[340,0,67,47],
+        //Red
+        ship9:[0,48,44,47],
+        ship10:[47,48,40,47],
+        ship11:[88,48,47,47],
+        ship12:[140,48,47,47],
+        ship13:[190,48,45,47],
+        ship14:[241,48,40,47],
+        ship15:[290,48,40,47],
+        ship16:[340,48,67,47]
     });
-    Crafty.sprite(57,32,"assets/img/ship2.png",{
-        ship2:[0,0]
-    });
-    Crafty.sprite(57,32,"assets/img/ship3.png",{
-        ship3:[0,0]
-    });
-    Crafty.sprite(57,32,"assets/img/ship4.png",{
-        ship4:[0,0]
-    });
+
     Crafty.sprite(11,28,"assets/img/bullet.png",{
         bullet:[0,0] 
     });
     Crafty.sprite(29,"assets/img/dmg.png",{
         dmg:[0,0]
     });
-  
+    Crafty.sprite(60,"assets/img/explosion.png",{
+        explosion1:[0,0],
+        explosion2:[0,1],
+        explosion3:[0,2],
+        explosion4:[0,3]
+    });
     Crafty.scene("game",function(){
         Crafty.canvas._canvas.style.zIndex = '1';
-        var area = 50;
-        Crafty.background('url(assets/img/bg.jpg)');
+        var area = 50,
+        hpBar = $('.hp'),
+        heatBar = $('.heat');
+        
+        Crafty.background('url(assets/img/bg.png)');
+        Crafty.c("Exploding",{
+           init:function(){
+               this.requires("SpriteAnimation")
+               .animate("explode1",0,0,4)
+               .animate("explode2",0,1,4)
+               .animate("explode3",0,2,4)
+               .animate("explode4",0,3,4);
+           },
+           explode:function(name){
+               this.animate(name,15);
+           }
+        });
         Crafty.c("Enemy",{
             _hp:2,
             _dmg:{},
@@ -59,7 +88,7 @@ $(function(){
 
                     }
                     for(var i in this._dmg){
-                        if(frame.frame >= i){
+                        if(frame.frame > i){
                             this._dmg[i].destroy();
                             delete this._dmg[i];
                         } 
@@ -77,6 +106,12 @@ $(function(){
                 if(this._hp == 0) this.die();
             },
             die:function(){
+                var exp = Crafty.math.randomInt(1,4);
+                Crafty.e("2D,Canvas,explosion"+exp+",Exploding").attr({
+                    x:this.x,
+                    y:this.y
+                }).explode("explode"+exp);
+                player.trigger("killed");
                 this.destroy();
             }
         });
@@ -91,10 +126,11 @@ $(function(){
                 current:0,
                 max:100
             },
+            _points:0,
             init:function(){
                 var keyDown = false;
-                var heatLevel = $( ".heat" ).progressbar({
-                    value: this._heatLevel.current/this._heatLevel.max * 100
+                heatBar.progressbar({
+                    value: 0
                 });
                 this.requires("Multiway,Keyboard,Collision").
                 reset()
@@ -119,18 +155,30 @@ $(function(){
                         keyDown = false;
                     } 
                 }).bind("EnterFrame",function(frame){
-                    
+                     
                     if(keyDown && (frame.frame % 10 == 0)){
                         this._heatLevel.current +=3;
                         this.shoot();
                     }
-                    if(this._heatLevel.current > 0 && (frame.frame % 10 == 0))
+                    if(this._heatLevel.current < this._heatLevel.max-10)
+                        $('.overheated').hide();
+                    if(this._heatLevel.current > 0 && (frame.frame % 5 == 0))
                         this._heatLevel.current--;
                     if(this._heatLevel.current >= this._heatLevel.max)
                         this._heatLevel.current=this._heatLevel.max;
-                    heatLevel.progressbar({
-                        value: this._heatLevel.current/this._heatLevel.max * 100
+                    var percent = this._heatLevel.current/this._heatLevel.max * 100;
+                     if(percent > 0)
+                        heatBar.find(".ui-progressbar-value").css({"background":"green"});
+                    if(percent > 33)
+                        heatBar.find(".ui-progressbar-value").css({"background":"yellow"});
+                    if(percent > 66)
+                        heatBar.find(".ui-progressbar-value").css({"background":"red"});
+                    heatBar.progressbar({
+                        value: percent
                     });
+                }).bind("killed",function(){
+                   this._points += 10;
+                   $('.points').text("Points: "+this._points);
                 });
             },
             shoot:function(){
@@ -152,19 +200,36 @@ $(function(){
                             this.destroy();
                         }
                     });   
+                   
+                }else{
+                    $('.overheated').show().effect('pulsate');
                 }
             },
             hurt:function(dmg){        
                 this._hp.current -= dmg;
-                $( ".hp" ).progressbar({
-                    value: this._hp.current/this._hp.max * 100
+                var percent = this._hp.current/this._hp.max * 100;
+                $('#cr-stage').effect('bounce',100);
+                if(percent < 66){
+                    hpBar.find('.ui-progressbar-value').css({
+                        "background-color":"yellow"
+                    });  
+                }
+                if(percent < 33){
+                    hpBar.find('.ui-progressbar-value').css({
+                        "background-color":"red"
+                    });  
+                }
+                hpBar.progressbar({
+                    value: percent
                 });
                 if(this._hp.current <= 0)
                     this.die();
             },
             reset:function(){
                
-                
+                hpBar.find('.ui-progressbar-value').css({
+                    "background-color":"green"
+                }); 
                 this.attr({
                     _hp:{
                         current:10,
@@ -187,10 +252,12 @@ $(function(){
             },
             die:function(){
                 this._lives --;
+            
                 this.reset();
-                $('.lives span').text('x'+this._lives);
+                $('.lives').text('Lives: '+this._lives);
                 if(this._lives <= 0){
                     this.destroy(); 
+                     $('.gameover').show().effect('pulsate');
                 }
                    
             }
@@ -206,6 +273,7 @@ $(function(){
         }
      
         var player = Crafty.e("2D,Canvas,ship1,Player,Collision");
+        
         var scroll = 0;
         Crafty.bind("EnterFrame",function(frame){
             scroll += 1;
