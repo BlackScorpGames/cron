@@ -54,8 +54,11 @@ Crafty.c("Player",{
                 this.shoot();
             }
         })
+        .bind("Killed",function(points){
+            alert("Got"+points);
+        })
         .reset() /*Set initial points*/;
-      
+        return this;
     },
     reset:function(){
         this.x = Crafty.viewport.width/2-this.w/2;

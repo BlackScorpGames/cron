@@ -1,6 +1,6 @@
 $(function(){
     //Init Crafty
-    Crafty.init(640,480);
+    Crafty.init(600,500);
     //Add Canvas Element
     Crafty.canvas.init();
     //Define Sprites
