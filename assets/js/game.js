@@ -12,19 +12,7 @@ $(function(){
         hpBar = $('.hp'),
         heatBar = $('.heat');
         
-        Crafty.background('url(assets/img/bg.png)');
-        Crafty.c("Exploding",{
-           init:function(){
-               this.requires("SpriteAnimation")
-               .animate("explode1",0,0,4)
-               .animate("explode2",0,1,4)
-               .animate("explode3",0,2,4)
-               .animate("explode4",0,3,4);
-           },
-           explode:function(name){
-               this.animate(name,15);
-           }
-        });
+      
         Crafty.c("Enemy",{
             _hp:2,
             _dmg:{},

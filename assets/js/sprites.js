@@ -28,8 +28,11 @@ Crafty.sprite(27,36,"assets/img/weapon2.png",{
 Crafty.sprite(29,"assets/img/dmg.png",{
     dmg:[0,0]
 });
-Crafty.sprite(32,"assets/img/asteroid.png",{
-    asteroid:[0,0]
+Crafty.sprite(64,"assets/img/asteroid64.png",{
+    asteroid64:[0,0]
+});
+Crafty.sprite(32,"assets/img/asteroid32.png",{
+    asteroid32:[0,0]
 });
 Crafty.sprite(65,"assets/img/explosion.png",{
     explosion1:[0,0],

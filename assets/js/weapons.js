@@ -23,10 +23,9 @@ Crafty.c("Weapon1",{
             this.y -= this.yspeed; 
         })
         .attr({
-            dmg:1,
-            firerate:10
+            dmg:1
         });
-        Crafty.audio.play("laser1");
+        //Crafty.audio.play("laser1");
     } 
 });
 Crafty.c("Weapon2",{
@@ -37,8 +36,8 @@ Crafty.c("Weapon2",{
             this.x += this.xspeed;
             this.y -= this.yspeed;  
         }).attr({
-            dmg:2,
-            firerate:20
+            dmg:2
         });
+        //Crafty.audio.play("laser2");
     } 
 });

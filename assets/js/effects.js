@@ -6,9 +6,10 @@ Crafty.c("RandomExplosion",{
         .animate("explode2",0,1,4)
         .animate("explode3",0,2,4)
         .animate("explode4",0,3,4)
-        .animate("explode"+rand,15)
+        .animate("explode"+rand,10)
         .delay(function(){this.destroy()},500);
-        Crafty.audio.play("explosion"+(rand %2));
+
+//        Crafty.audio.play("explosion"+(rand %2));
     }
 });
 Crafty.c("Damage",{

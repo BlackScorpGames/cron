@@ -7,11 +7,11 @@ Crafty.c("Player",{
         current:100,
         max:100
     },
-    movementSpeed:4,
+    movementSpeed:6,
     lives:3,
     points:0,
     weapon:{
-        firerate:10,
+        firerate:5,
         name:"Weapon1"
     },
     powerups:{},
@@ -41,7 +41,6 @@ Crafty.c("Player",{
         .bind("KeyDown", function(e) {
             if(e.keyCode === Crafty.keys.SPACE){
                 keyDown = true;
-                this.shoot();
             } 
         })
         .bind("KeyUp", function(e) {
@@ -55,8 +54,12 @@ Crafty.c("Player",{
             }
         })
         .bind("Killed",function(points){
-            alert("Got"+points);
+            this.points += points;
         })
+        .onHit("Enemy",function(ent){
+           var target = ent[0].obj;
+           this.hurt(target.hp);
+            })
         .reset() /*Set initial points*/;
         return this;
     },
@@ -65,13 +68,21 @@ Crafty.c("Player",{
         this.y = Crafty.viewport.height-this.h-100;
     },
     shoot:function(){ 
-        Crafty.e(this.weapon.name).attr({
-            x: this._x+this._w/2,
-            y: this._y,
+        var bullet = Crafty.e(this.weapon.name);
+        bullet.attr({
+            x: this._x+this._w/2-bullet.w/2,
+            y: this._y-this._h/2+bullet.h/2,
             rotation: this._rotation,
             xspeed: 20 * Math.sin(this._rotation / (180 / Math.PI)),
             yspeed: 20 * Math.cos(this._rotation / (180 / Math.PI))
         });  
+    },
+    hurt:function(dmg){
+        this.hp -= dmg;
+        if(this.hp <= 0) this.die();
+    },
+    die:function(){
+        
     }
     
 });
