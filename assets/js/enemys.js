@@ -22,13 +22,6 @@ Crafty.c("Enemy",{
         });
         this.hp -= dmg;
         if(this.hp <= 0) this.die();
-    },
-    die:function(){
-        Crafty.e("RandomExplosion").attr({
-            x:this.x,
-            y:this.y
-        });
-        this.destroy();
     }
 });
 
@@ -58,7 +51,7 @@ Crafty.c("Asteroid",{
             x:this.x,
             y:this.y
         });
-        for(var i = 0;i<4;i++){
+        for(var i = 0;i<Crafty.math.randomInt(1,8);i++){
             Crafty.e("SmallAsteroid").attr({
                 x:this.x,
                 y:this.y
@@ -97,7 +90,7 @@ Crafty.c("SmallAsteroid",{
 });
 
 Crafty.c("Kamikaze",{
-    hp:4,
+    hp:3,
     points:15,
     init:function(){
         var player = Crafty("Player");
@@ -113,7 +106,6 @@ Crafty.c("Kamikaze",{
             player = Crafty(player[0]);
             if(this.y < 0)
                 this.y +=2;
-            
 
             if(this.x < player.x && !attacking)
                 this.x++;
