@@ -117,7 +117,7 @@ Crafty.c("Kamikaze",{
                 attacking = true;
             
             if(attacking)
-                this.y += 10;
+                this.y += 8;
         });
     },
     die:function(){

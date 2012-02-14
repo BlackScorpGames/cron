@@ -7,7 +7,7 @@ Crafty.c("Player",{
         current:100,
         max:100
     },
-    movementSpeed:6,
+    movementSpeed:8,
     lives:3,
     points:0,
     weapon:{
