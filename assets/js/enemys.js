@@ -22,6 +22,13 @@ Crafty.c("Enemy",{
         });
         this.hp -= dmg;
         if(this.hp <= 0) this.die();
+    },
+    die:function(){
+        Crafty.e("RandomExplosion").attr({
+            x:this.x,
+            y:this.y
+        });
+        this.destroy();
     }
 });
 
@@ -41,6 +48,8 @@ Crafty.c("Asteroid",{
             this.x += direction;
         })
         .attr({
+            y:-this.h,
+            x:Crafty.math.randomInt(this.w,Crafty.viewport.width - this.w),
             rotation:Crafty.math.randomInt(0,360)
         });
     },
@@ -86,3 +95,44 @@ Crafty.c("SmallAsteroid",{
         this.destroy();
     }
 });
+
+Crafty.c("Kamikaze",{
+    hp:4,
+    points:15,
+    init:function(){
+        var player = Crafty("Player");
+        var attacking = false;
+        this.addComponent("Enemy","ship11")
+        .origin("center")
+        .attr({
+            rotation:180,
+            y:-this.h,
+            x:Crafty.math.randomInt(this.w,Crafty.viewport.width - this.w)
+        })
+        .bind("EnterFrame",function(){
+            player = Crafty(player[0]);
+            if(this.y < 0)
+                this.y +=2;
+            
+
+            if(this.x < player.x && !attacking)
+                this.x++;
+            
+            if(this.x > player.x && !attacking)
+                this.x--;
+        
+            if(this.x == player.x)
+                attacking = true;
+            
+            if(attacking)
+                this.y += 10;
+        });
+    },
+    die:function(){
+        Crafty.e("RandomExplosion").attr({
+            x:this.x,
+            y:this.y
+        });
+        this.destroy();
+    }
+})
