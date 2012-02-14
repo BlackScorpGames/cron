@@ -18,6 +18,7 @@ Crafty.c("Weapon1",{
     init:function(){
         this
         .addComponent("Bullet","laser1")
+        .origin("center")
         .bind("EnterFrame", function() {
             this.x += this.xspeed;
             this.y -= this.yspeed; 
@@ -32,6 +33,7 @@ Crafty.c("Weapon2",{
     init:function(){
         this
         .addComponent("Bullet","laser2")
+        .origin("center")
         .bind("EnterFrame", function() {
             this.x += this.xspeed;
             this.y -= this.yspeed;  

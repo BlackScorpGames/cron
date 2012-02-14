@@ -68,7 +68,7 @@ Crafty.c("Player",{
         this.y = Crafty.viewport.height-this.h-100;
     },
     shoot:function(){ 
-        var bullet = Crafty.e(this.weapon.name);
+        var bullet = Crafty.e(this.weapon.name,"PlayerBullet");
         bullet.attr({
             x: this._x+this._w/2-bullet.w/2,
             y: this._y-this._h/2+bullet.h/2,

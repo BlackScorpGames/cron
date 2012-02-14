@@ -60,14 +60,17 @@ Crafty.scene("Level1",function(){
         //Spot each 50th Fram one Asteroid
  
         if(frame % 50 == 0){
-            for(var i = 1;i < Crafty.math.randomInt(1,5);i++){
-                Crafty.e("Asteroid");
-            }
-           Crafty.e("Kamikaze");
-         
-           
+            Crafty.e("Asteroid");
         }
-         
+        if(frame % 70 == 0){
+            Crafty.e("Kamikaze");   
+        }
+        if(frame % 80 == 0){
+            Crafty.e("Level1");
+        }
+        if(frame % 90 == 0){
+            Crafty.e("Level2");
+        }
     };
     //Create the player
     Crafty.e("Player");
