@@ -86,11 +86,11 @@
     -khtml-opacity: 0.5;
     opacity: 0.5;
 }
-.overheated,.gameover{
+#interface .alert{
     font-size: 30px;
     color:red;
     width:100%;
     line-height: 480px;
-    display:block;
+    display:none;
     text-align: center;
 }

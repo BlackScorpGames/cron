@@ -19,7 +19,8 @@ Crafty.c("Player",{
     score:0,
     weapon:{
         firerate:5,
-        name:"Weapon1"
+        name:"Weapon1",
+        overheated:false
     },
     powerups:{},
     ship:"ship1",
@@ -36,8 +37,13 @@ Crafty.c("Player",{
             score: $('.score'),
             hp:this.bars.hp.find('.text'),
             heat:this.bars.heat.find('.text'),
-            shield:this.bars.shield.find('.text')
+            shield:this.bars.shield.find('.text'),
+            alert:$('.alert')
         }
+        this.bars.hp.addClass('green');
+        this.bars.shield.addClass('green');
+        this.bars.heat.addClass('green');
+        
         var keyDown = false; //Player didnt pressed a key
         this
         .addComponent("2D","Canvas",this.ship,"Multiway","Keyboard","Collision") /*Add needed Components*/
@@ -70,13 +76,27 @@ Crafty.c("Player",{
             } 
         })
         .bind("EnterFrame",function(frame){
-            if(keyDown && (frame.frame % this.weapon.firerate == 0)){
-                this.shoot();
+            if(frame.frame % this.weapon.firerate == 0){
+               
+                if(keyDown && !this.weapon.overheated)
+                    this.shoot();
+            
+                if(this.heat.current > 0) //Cooldown the weapon
+                    this.heat.current--;
+
+                this.updateHeat();
+                
+                if(this.weapon.overheated && this.heat.percent < 75){
+                    this.weapon.overheated = false;
+                    this.infos.alert.hide();
+                }
+                    
             }
+            
         })
         .bind("Killed",function(points){
             this.score += points;
-            this.update();
+            this.updateScore();
         })
         .onHit("EnemyBullet",function(ent){
             var bullet = ent[0].obj;
@@ -102,7 +122,11 @@ Crafty.c("Player",{
             max:100,
             percent:0
         }
-        this.update();
+        this.updateHp();
+        this.updateShield();
+        this.updateHeat();
+        this.updateLives();
+        this.updateScore();
         //Init position
         this.x = Crafty.viewport.width/2-this.w/2;
         this.y = Crafty.viewport.height-this.h-100;
@@ -116,8 +140,16 @@ Crafty.c("Player",{
             rotation: this._rotation,
             xspeed: 20 * Math.sin(this._rotation / (180 / Math.PI)),
             yspeed: 20 * Math.cos(this._rotation / (180 / Math.PI))
-        });  
-        this.update();
+        }); 
+     
+        if(this.heat.current < this.heat.max)
+            this.heat.current += 2;
+         
+        if(this.heat.current >= this.heat.max){
+            this.infos.alert.text('Weapon Overheated!').show().effect('pulsate',500);
+            this.weapon.overheated = true;
+        }
+           
     },
     hurt:function(dmg){
         Crafty.e("Damage").attr({
@@ -130,7 +162,8 @@ Crafty.c("Player",{
         }else{
             this.shield.current -= dmg;
         } 
-        this.update();
+        this.updateShield();
+        this.updateHp();
         if(this.hp.current <= 0) this.die();
     },
     die:function(){
@@ -139,34 +172,43 @@ Crafty.c("Player",{
             y:this.y
         });
         this.lives--;
-        this.reset();
-    },
-    update:function(){
-        //Calculate Percents
-        this.hp.percent = Math.round(this.hp.current/this.hp.max * 100);
-        this.shield.percent = Math.round(this.shield.current/this.shield.max * 100);
-        this.heat.percent = Math.round(this.heat.current/this.heat.max * 100);
-     
-        //Display text in bars
-        this.infos.hp.text('HP: '+this.hp.current+ '/'+this.hp.max);
-        this.infos.shield.text('Shield: '+this.shield.current+ '/'+this.shield.max);
-        this.infos.heat.text('Heat: '+this.heat.current+ '/'+this.heat.max);
+        if(this.lives <= 0){
+            this.destroy();
+            this.infos.alert.show().text('Game Over!').effect('pulsate',500);
+            Crafty.pause();
+        }else{
+            this.reset();
+        }
         
-        //Display Bars
-        this.bars.hp.addClass('green').progressbar({
-            value:this.hp.percent
-        });
-      
-        this.bars.shield.addClass('yellow').progressbar({
-            value:this.shield.percent
-        });
-        this.bars.heat.addClass('red').progressbar({
+        
+    },
+    updateHeat:function(){
+    
+        this.heat.percent = Math.round(this.heat.current/this.heat.max * 100);
+        this.infos.heat.text('Heat: '+this.heat.current+ '/'+this.heat.max);
+        this.bars.heat.progressbar({
             value:this.heat.percent
         });
-        //Display Infos
-        this.infos.lives.text("Lives: "+this.lives);
+    },
+    updateHp:function(){
+        this.hp.percent = Math.round(this.hp.current/this.hp.max * 100);
+        this.infos.hp.text('HP: '+this.hp.current+ '/'+this.hp.max);
+        this.bars.hp.progressbar({
+            value:this.hp.percent
+        });
+    },
+    updateShield:function(){
+        this.shield.percent = Math.round(this.shield.current/this.shield.max * 100);
+        this.infos.shield.text('Shield: '+this.shield.current+ '/'+this.shield.max);
+        this.bars.shield.progressbar({
+            value:this.shield.percent
+        });
+    },
+    updateScore:function(){
         this.infos.score.text("Score: "+this.score);
-        
+    },
+    updateLives:function(){
+        this.infos.lives.text("Lives: "+this.lives);
     }
-    
+  
 });
