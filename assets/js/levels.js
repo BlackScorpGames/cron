@@ -59,16 +59,17 @@ Crafty.scene("Level1",function(){
     var spotEnemys = function(frame){   
         //Spot each 50th Fram one Asteroid
  
-        if(frame % 50 == 0){
+        if(frame % 50 == 0 && Crafty("Asteroid").length < 3){
             Crafty.e("Asteroid");
+            
         }
-        if(frame % 70 == 0){
+        if(frame % 70 == 0 && Crafty("Kamikaze").length < 1){
             Crafty.e("Kamikaze");   
         }
-        if(frame % 80 == 0){
+        if(frame % 80 == 0  && Crafty("Level1").length < 2){
             Crafty.e("Level1");
         }
-        if(frame % 90 == 0){
+        if(frame % 90 == 0  && Crafty("Level2").length < 2){
             Crafty.e("Level2");
         }
     };
