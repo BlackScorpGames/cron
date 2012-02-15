@@ -1,4 +1,5 @@
 Crafty.c("Enemy",{
+    playerID:null,
     init:function(){
         this.addComponent("2D","Canvas","Collision")  
         .bind("EnterFrame",function(){
@@ -11,8 +12,14 @@ Crafty.c("Enemy",{
         })
         .onHit("PlayerBullet",function(ent){
             var bullet = ent[0].obj;
+            this.playerID = bullet.playerID;
             this.hurt(bullet.dmg);
             bullet.destroy();
+        })
+        .onHit("Player",function(ent){
+            var player = ent[0].obj;
+            Crafty(player[0]).hurt(this.hp);
+            this.hurt(this.hp);
         });
     },
     hurt:function(dmg){
@@ -47,6 +54,7 @@ Crafty.c("Asteroid",{
         });
     },
     die:function(){
+       
         Crafty.e("RandomExplosion").attr({
             x:this.x,
             y:this.y
@@ -57,7 +65,7 @@ Crafty.c("Asteroid",{
                 y:this.y
             });
         }
-        
+        Crafty(this.playerID).trigger("Killed",this.points);
         this.destroy();
     }
 });
@@ -85,6 +93,7 @@ Crafty.c("SmallAsteroid",{
             x:this.x,
             y:this.y
         });
+        Crafty(this.playerID).trigger("Killed",this.points);
         this.destroy();
     }
 });
@@ -125,6 +134,7 @@ Crafty.c("Kamikaze",{
             x:this.x,
             y:this.y
         });
+        Crafty(this.playerID).trigger("Killed",this.points);
         this.destroy();
     }
 });
@@ -144,14 +154,11 @@ Crafty.c("Level1",{
         })
         .bind("EnterFrame",function(frame){
             player = Crafty(player[0]);
-            x = Math.abs(this.x-player.x);
+            x = Math.abs((this.x+this._w/2)-player.x);
         
             if((x<40)&& this._y < player.y && frame.frame % 20 == 0){
                 this.shoot();
             }
-               
-            
-           
             this.y += 2;
         });
     },
@@ -160,10 +167,11 @@ Crafty.c("Level1",{
             x:this.x,
             y:this.y
         });
+        Crafty(this.playerID).trigger("Killed",this.points);
         this.destroy();
     },
     shoot:function(){
-        var bullet = Crafty.e("Weapon1");
+        var bullet = Crafty.e("Weapon1","EnemyBullet");
         bullet.attr({
             x: this._x+this._w/2-bullet.w/2,
             y: this._y+this._h-bullet.h/2,
@@ -188,7 +196,7 @@ Crafty.c("Level2",{
         })
         .bind("EnterFrame",function(frame){
             player = Crafty(player[0]);
-            x = Math.abs(this.x-player.x);
+            x = Math.abs((this.x+this._w/2)-player.x);
             if(this.x < player.x)
                 this.x++;
             if(this.x > player.x)
@@ -206,54 +214,11 @@ Crafty.c("Level2",{
             x:this.x,
             y:this.y
         });
+        Crafty(this.playerID).trigger("Killed",this.points);
         this.destroy();
     },
     shoot:function(){
-        var bullet = Crafty.e("Weapon1");
-        bullet.attr({
-            x: this._x+this._w/2-bullet.w/2,
-            y: this._y+this._h-bullet.h/2,
-            rotation: this._rotation,
-            xspeed: 20 * Math.sin(this._rotation / (180 / Math.PI)),
-            yspeed: 20 * Math.cos(this._rotation / (180 / Math.PI))
-        });  
-    }
-});
-Crafty.c("ShipSnakeLeft",{
-    hp:2,
-    points:10,
-    init:function(){
-       
-        this.addComponent("Enemy","ship10")
-        .origin("center")
-        .attr({
-            rotation:180,
-            y:-this.h,
-            x:Crafty.math.randomInt(this.w,Crafty.viewport.width - this.w)
-        })
-        .bind("EnterFrame",function(frame){
-            player = Crafty(player[0]);
-            if(this.x < player.x)
-                this.x++;
-            if(this.x > player.x)
-                this.x--;
-        
-            if((this.x + 5 >= player.x || this.x - 5 <= player.x )&& this.y < player.y && frame.frame % 20 == 0)
-                this.shoot();
-            
-           
-            this.y += 2;
-        });
-    },
-    die:function(){
-        Crafty.e("RandomExplosion").attr({
-            x:this.x,
-            y:this.y
-        });
-        this.destroy();
-    },
-    shoot:function(){
-        var bullet = Crafty.e("Weapon1");
+        var bullet = Crafty.e("Weapon1","EnemyBullet");
         bullet.attr({
             x: this._x+this._w/2-bullet.w/2,
             y: this._y+this._h-bullet.h/2,

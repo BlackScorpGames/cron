@@ -1,11 +1,11 @@
 Crafty.c("Player",{
     hp:{
-        current:100,
-        max:100
+        current:10,
+        max:10
     },
     shield:{
-        current:100,
-        max:100
+        current:10,
+        max:10
     },
     movementSpeed:8,
     lives:3,
@@ -17,6 +17,7 @@ Crafty.c("Player",{
     powerups:{},
     ship:"ship1",
     init:function(){
+        
         var keyDown = false; //Player didnt pressed a key
         this
         .addComponent("2D","Canvas",this.ship,"Multiway","Keyboard","Collision") /*Add needed Components*/
@@ -56,10 +57,11 @@ Crafty.c("Player",{
         .bind("Killed",function(points){
             this.points += points;
         })
-        .onHit("Enemy",function(ent){
-           var target = ent[0].obj;
-           this.hurt(target.hp);
-            })
+        .onHit("EnemyBullet",function(ent){
+            var bullet = ent[0].obj;
+            this.hurt(bullet.dmg);
+            bullet.destroy();
+        })
         .reset() /*Set initial points*/;
         return this;
     },
@@ -70,6 +72,7 @@ Crafty.c("Player",{
     shoot:function(){ 
         var bullet = Crafty.e(this.weapon.name,"PlayerBullet");
         bullet.attr({
+            playerID:this[0],
             x: this._x+this._w/2-bullet.w/2,
             y: this._y-this._h/2+bullet.h/2,
             rotation: this._rotation,
@@ -78,11 +81,21 @@ Crafty.c("Player",{
         });  
     },
     hurt:function(dmg){
-        this.hp -= dmg;
-        if(this.hp <= 0) this.die();
+        Crafty.e("Damage").attr({
+            x:this.x,
+            y:this.y
+        });
+        this.shield.current -= dmg;
+        if(this.shield.current <= 0)
+            this.hp.current -= dmg;
+  
+        if(this.hp.current <= 0) this.die();
     },
     die:function(){
-        
+        Crafty.e("RandomExplosion").attr({
+            x:this.x,
+            y:this.y
+        });
     }
     
 });

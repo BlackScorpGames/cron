@@ -18,13 +18,49 @@
     width: 100%;
     height: 100%;
     z-index:3;
-
+}
+#interface .bars{
+    position: absolute;
+    padding:5px;
+}
+#interface .bars .text{
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    line-height: 24px;
+    font-size: 12px;
+    color:#333333;
+}
+#interface .ui-progressbar{
+    background:url(../img/bars.png) top left no-repeat;
+    width:178px;
+    height:24px;
+}
+#interface .left{
+    left:0px;
+}
+#interface .right{
+    right:0px;
+}
+#interface .red .ui-progressbar-value{
+    display: block;
+    height:100%;
+    background:url(../img/bars.png) -0px -27px no-repeat;
+}
+#interface .yellow .ui-progressbar-value{
+    display: block;
+    height:100%;
+    background:url(../img/bars.png) -0px -80px no-repeat;
+}
+#interface .green .ui-progressbar-value{
+    display: block;
+    height:100%;
+    background:url(../img/bars.png) -0px -54px no-repeat;
 }
 #interface .panel{
     height: 35px;
     position: absolute;
     width:100%;
-    padding:5px;
 }
 .bottom{
     bottom:0px;
@@ -36,41 +72,6 @@
     -moz-opacity:0.5;
     -khtml-opacity: 0.5;
     opacity: 0.5;
-}
-#interface .panel div{
-    position: absolute;
-    line-height: 35px;
-    color:#ffffff;
-}
-div.lives span{
-    height:100%;
-    float:right;
-}
-div.points{
-    right:15px;
-}
-div.level{
-    left:0px;
-    width:100%;
-    right: 15px;
-    text-align: center;
-}
-
-.hp{
-    width:48%;
-    height:30px;
-    border:1px solid black;
-}
-.heat{
-    right:15px;
-    width:48%;
-    height:30px;
-    border:1px solid black;
-}
-.ui-progressbar-value{
-    display: block;
-    height:100%;
-    background: green;
 }
 .overheated,.gameover{
     font-size: 30px;

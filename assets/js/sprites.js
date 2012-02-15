@@ -19,7 +19,7 @@ Crafty.sprite("assets/img/ships.png",{
     ship16:[340,48,67,47]
 });
 
-Crafty.sprite(11,28,"assets/img/weapon1.png",{
+Crafty.sprite(5,13,"assets/img/weapon1_small.png",{
     laser1:[0,0] 
 });
 Crafty.sprite(27,36,"assets/img/weapon2.png",{

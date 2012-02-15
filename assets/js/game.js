@@ -6,6 +6,21 @@ $(function(){
     //Define Sprites
    
     Crafty.canvas._canvas.style.zIndex = '1';
+    
+    var bars = {
+        hp:$('#hp'),
+        heat:$('#heat'),
+        shield:$('#shield')
+    }
+    bars.hp.addClass('yellow').progressbar({
+        value: 50
+    });
+    bars.heat.addClass('red').progressbar({
+        value: 100
+    });
+    bars.shield.addClass('green').progressbar({
+        value: 100
+    });
     Crafty.scene("game",function(){
         
         var area = 50,
@@ -127,18 +142,24 @@ $(function(){
                     if(this._heatLevel.current >= this._heatLevel.max)
                         this._heatLevel.current=this._heatLevel.max;
                     var percent = this._heatLevel.current/this._heatLevel.max * 100;
-                     if(percent > 0)
-                        heatBar.find(".ui-progressbar-value").css({"background":"green"});
+                    if(percent > 0)
+                        heatBar.find(".ui-progressbar-value").css({
+                            "background":"green"
+                        });
                     if(percent > 33)
-                        heatBar.find(".ui-progressbar-value").css({"background":"yellow"});
+                        heatBar.find(".ui-progressbar-value").css({
+                            "background":"yellow"
+                        });
                     if(percent > 66)
-                        heatBar.find(".ui-progressbar-value").css({"background":"red"});
+                        heatBar.find(".ui-progressbar-value").css({
+                            "background":"red"
+                        });
                     heatBar.progressbar({
                         value: percent
                     });
                 }).bind("killed",function(){
-                   this._points += 10;
-                   $('.points').text("Points: "+this._points);
+                    this._points += 10;
+                    $('.points').text("Points: "+this._points);
                 });
             },
             shoot:function(){
@@ -217,7 +238,7 @@ $(function(){
                 $('.lives').text('Lives: '+this._lives);
                 if(this._lives <= 0){
                     this.destroy(); 
-                     $('.gameover').show().effect('pulsate');
+                    $('.gameover').show().effect('pulsate');
                 }
                    
             }
@@ -242,6 +263,6 @@ $(function(){
             Crafty.stage.elem.style.backgroundPosition ="0px "+scroll+"px";
         });
     });
-   Crafty.scene("Level1");
-   // Crafty.scene("game");
+    Crafty.scene("Level1");
+// Crafty.scene("game");
 });
