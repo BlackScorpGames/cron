@@ -22,10 +22,23 @@
 #interface .bars{
     position: absolute;
     padding:5px;
+    height:auto;
 }
-#interface .bars .text{
+#interface div.text{
+    position: absolute; 
+    line-height: 24px;
+    font-size: 12px;
+    color:#ffffff;
+    padding:5px;
+}
+#interface div.text.center{
+    width:100%;
+    text-align: center;
+}
+#interface .bars span.text{
     position: absolute;
     width: 100%;
+    display:block;
     text-align: center;
     line-height: 24px;
     font-size: 12px;

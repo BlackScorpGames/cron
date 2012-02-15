@@ -1,23 +1,43 @@
 Crafty.c("Player",{
     hp:{
         current:10,
-        max:10
+        max:10,
+        percent:100
     },
     shield:{
         current:10,
-        max:10
+        max:10,
+        percent:100
+    },
+    heat:{
+        current:0,
+        max:100,
+        percent:0
     },
     movementSpeed:8,
     lives:3,
-    points:0,
+    score:0,
     weapon:{
         firerate:5,
         name:"Weapon1"
     },
     powerups:{},
     ship:"ship1",
+    bars:{},
+    infos:{},
     init:function(){
-        
+        this.bars = {
+            hp:$('#hp'),
+            heat:$('#heat'),
+            shield:$('#shield')
+        };
+        this.infos = {
+            lives :$('.lives'),
+            score: $('.score'),
+            hp:this.bars.hp.find('.text'),
+            heat:this.bars.heat.find('.text'),
+            shield:this.bars.shield.find('.text')
+        }
         var keyDown = false; //Player didnt pressed a key
         this
         .addComponent("2D","Canvas",this.ship,"Multiway","Keyboard","Collision") /*Add needed Components*/
@@ -55,7 +75,8 @@ Crafty.c("Player",{
             }
         })
         .bind("Killed",function(points){
-            this.points += points;
+            this.score += points;
+            this.update();
         })
         .onHit("EnemyBullet",function(ent){
             var bullet = ent[0].obj;
@@ -66,6 +87,23 @@ Crafty.c("Player",{
         return this;
     },
     reset:function(){
+        this.hp = {
+            current:10,
+            max:10,
+            percent:100
+        };
+        this.shield = {
+            current:10,
+            max:10,
+            percent:100
+        };
+        this.heat = {
+            current:0,
+            max:100,
+            percent:0
+        }
+        this.update();
+        //Init position
         this.x = Crafty.viewport.width/2-this.w/2;
         this.y = Crafty.viewport.height-this.h-100;
     },
@@ -79,16 +117,20 @@ Crafty.c("Player",{
             xspeed: 20 * Math.sin(this._rotation / (180 / Math.PI)),
             yspeed: 20 * Math.cos(this._rotation / (180 / Math.PI))
         });  
+        this.update();
     },
     hurt:function(dmg){
         Crafty.e("Damage").attr({
             x:this.x,
             y:this.y
         });
-        this.shield.current -= dmg;
-        if(this.shield.current <= 0)
+        if(this.shield.current <= 0){
+            this.shield.current = 0;
             this.hp.current -= dmg;
-  
+        }else{
+            this.shield.current -= dmg;
+        } 
+        this.update();
         if(this.hp.current <= 0) this.die();
     },
     die:function(){
@@ -96,6 +138,35 @@ Crafty.c("Player",{
             x:this.x,
             y:this.y
         });
+        this.lives--;
+        this.reset();
+    },
+    update:function(){
+        //Calculate Percents
+        this.hp.percent = Math.round(this.hp.current/this.hp.max * 100);
+        this.shield.percent = Math.round(this.shield.current/this.shield.max * 100);
+        this.heat.percent = Math.round(this.heat.current/this.heat.max * 100);
+     
+        //Display text in bars
+        this.infos.hp.text('HP: '+this.hp.current+ '/'+this.hp.max);
+        this.infos.shield.text('Shield: '+this.shield.current+ '/'+this.shield.max);
+        this.infos.heat.text('Heat: '+this.heat.current+ '/'+this.heat.max);
+        
+        //Display Bars
+        this.bars.hp.addClass('green').progressbar({
+            value:this.hp.percent
+        });
+      
+        this.bars.shield.addClass('yellow').progressbar({
+            value:this.shield.percent
+        });
+        this.bars.heat.addClass('red').progressbar({
+            value:this.heat.percent
+        });
+        //Display Infos
+        this.infos.lives.text("Lives: "+this.lives);
+        this.infos.score.text("Score: "+this.score);
+        
     }
     
 });
