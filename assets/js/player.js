@@ -78,20 +78,24 @@ Crafty.c("Player",{
         .bind("EnterFrame",function(frame){
             if(frame.frame % this.weapon.firerate == 0){
                
-                if(keyDown && !this.weapon.overheated)
+                if(keyDown && !this.weapon.overheated){
                     this.shoot();
+                }else{
+                   if(this.heat.current > 0) //Cooldown the weapon
+                    this.heat.current = Math.round(this.heat.current*29/30); 
+                }
+                    
             
-                if(this.heat.current > 0) //Cooldown the weapon
-                    this.heat.current--;
+                
 
                 this.updateHeat();
                 
-                if(this.weapon.overheated && this.heat.percent < 75){
+                if(this.weapon.overheated && this.heat.percent < 85){
                     this.weapon.overheated = false;
                     this.infos.alert.hide();
                 }
                     
-            }
+          }
             
         })
         .bind("Killed",function(points){
