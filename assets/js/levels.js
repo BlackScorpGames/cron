@@ -53,7 +53,7 @@ Crafty.scene("Level1",function(){
     //Setup background of level
     Crafty.background("url(assets/img/bg.png)");
     //Play background music and repeat
-    // Crafty.audio.play("space",-1);
+    //Crafty.audio.play("space",-1);
     $('.level').text('Level: 1');
 
     var spotEnemys = function(frame){   

@@ -218,7 +218,7 @@ Crafty.c("Level2",{
         this.destroy();
     },
     shoot:function(){
-        var bullet = Crafty.e("Weapon1","EnemyBullet");
+        var bullet = Crafty.e("Weapon2","EnemyBullet");
         bullet.attr({
             x: this._x+this._w/2-bullet.w/2,
             y: this._y+this._h-bullet.h/2,
