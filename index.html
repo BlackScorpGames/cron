@@ -2,35 +2,45 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Deser Rescue</title>
+        <title>Cron</title>
         <script type="text/javascript" src="http://cdn.crafty-modules.com/crafty-DEBUG.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="assets/js/sprites.js"></script>
+        <script type="text/javascript" src="assets/js/sounds.js"></script>
+        <script type="text/javascript" src="assets/js/weapons.js"></script>
+        <script type="text/javascript" src="assets/js/effects.js"></script>
+        <script type="text/javascript" src="assets/js/enemys.js"></script>
+        <script type="text/javascript" src="assets/js/player.js"></script>
+        <script type="text/javascript" src="assets/js/levels.js"></script>
         <script type="text/javascript" src="assets/js/game.js"></script>
         <link type="text/css" href="assets/css/style.css" rel="stylesheet" /> 
     </head>
     <body>
-        <div class="info"><h1>Desert Rescue</h1>
+        <div class="info"><h1>Cron</h1>
             <p>Small Canvas shooter based on <a href="http://craftyjs.com">Crafty</a></p>
             <p>Use Arrow Keys to move, Space to shoot</p>
-            <p>Get the <a href="https://github.com/BlackScorp/desert_rescue">Code</a></p>
+            <p>Get the <a href="https://github.com/BlackScorp/cron">Code</a></p>
             <p>Get the <a href="http://opengameart.org">Images and Sounds</a></p>
         </div>
         <div id="cr-stage">
             <div id="interface">
+                <div class="panel transparent bottom"></div>
                 <div class="panel transparent"></div>
-                <div class="panel">
-                    <div class="lives">Lives: 3</div>
-                    <div class="level">Level: 1</div>
-                    <div class="points">Points : 0</div>
+                <div class="lives text left"></div>
+                <div class="level text center"></div>
+                <div class="score text right"></div>
+                <div class="bars bottom left" >
+                    <div id="hp" ><span class="text"></span></div>
                 </div>
-                 <div class="panel transparent bottom"></div>
-                <div class="panel bottom">
-                    <div class="hp"></div>
-                    <div class="heat"></div>
+                <div class="bars bottom"  style="left:50%;margin-left:-89px">
+                    <div id="shield" ><span class="text"></span></div>
                 </div>
-                 <div class="gameover" style="display:none">Game Over</div>
-                 <div class="overheated" style="display:none">Weapon Overheated</div>
+                <div class="bars bottom right" >
+                    <div id="heat" ><span class="text"></span></div>
+                </div>
+                
+                <div class="alert"></div>
             </div>
         </div>
 
