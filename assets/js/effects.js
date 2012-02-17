@@ -9,7 +9,7 @@ Crafty.c("RandomExplosion",{
         .animate("explode"+rand,10)
         .delay(function(){this.destroy()},500);
 
-//        Crafty.audio.play("explosion"+(rand %2));
+        Crafty.audio.play("explosion"+(rand %2));
     }
 });
 Crafty.c("Damage",{
