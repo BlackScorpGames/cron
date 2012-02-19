@@ -2,7 +2,7 @@ Crafty.c("Bullet",{
     dmg:0,
     firerate:0,
     init:function(){
-        this.addComponent("2D","Canvas")
+        this.addComponent("2D","Canvas","Collision")
         .bind("EnterFrame",function(){
             if(this.x > Crafty.viewport.width+this.w ||
                 this.x < -this.w || 
@@ -10,6 +10,10 @@ Crafty.c("Bullet",{
                 this.y > Crafty.viewport.height+this.h){
                 this.destroy();
             }
+        })
+        .onHit("Bullet",function(ent){
+            this.destroy();
+            ent[0].obj.destroy();
         });
     }
 });

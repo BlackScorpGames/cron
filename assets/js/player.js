@@ -1,4 +1,4 @@
-Crafty.c("Player",{
+ Crafty.c("Player",{
     hp:{
         current:10,
         max:10,
@@ -57,8 +57,8 @@ Crafty.c("Player",{
             /*Dont allow to move the player out of Screen*/
             if(this.x+this.w > Crafty.viewport.width ||
                 this.x+this.w < this.w || 
-                this.y+this.h < this.h || 
-                this.y+this.h > Crafty.viewport.height){
+                this.y+this.h-35 < this.h || 
+                this.y+this.h+35 > Crafty.viewport.height){
                 this.attr({
                     x:from.x, 
                     y:from.y

@@ -5,20 +5,15 @@ Crafty.scene("Loading",function(){
     //Images
     "assets/img/bg.png",
     "assets/img/ships.png",
-    "assets/img/weapon1.png",
+    "assets/img/weapon1_small.png",
     "assets/img/weapon2.png",
     "assets/img/dmg.png",
     "assets/img/asteroid64.png",
     "assets/img/asteroid32.png",
     "assets/img/explosion.png",
-  
-    "media/music/through-space.ogg",
-    "media/sounds/explodemini.wav",
+    "media/sounds/explode.mp3",
+    "media/sounds/explode.ogg",
     "media/sounds/explode.wav",
-    "media/sounds/laser1.wav",
-    "media/sounds/laser2.wav",
-    "media/sounds/laser3.wav",
-    "media/sounds/laser4.wav"
     ];
     Crafty.background("black");
     Crafty.e("2D","DOM","Text").css({
@@ -31,8 +26,8 @@ Crafty.scene("Loading",function(){
     });
     Crafty.load(toLoad,
         function() {
-            //when loaded
-            Crafty.scene("Level1"); //go to Level1 scene
+        //when loaded
+        //  Crafty.scene("Level1"); //go to Level1 scene
         },
 
         function(e) {
@@ -53,23 +48,22 @@ Crafty.scene("Level1",function(){
     //Setup background of level
     Crafty.background("url(assets/img/bg.png)");
     //Play background music and repeat
-    //Crafty.audio.play("space",-1);
+    Crafty.audio.play("space",-1);
     $('.level').text('Level: 1');
 
     var spotEnemys = function(frame){   
         //Spot each 50th Fram one Asteroid
  
-        if(frame % 50 == 0 && Crafty("Asteroid").length < 3){
-            Crafty.e("Asteroid");
-            
+        if(frame % 50 == 0 && Crafty("Asteroid").length < 1){
+            Crafty.e("Asteroid"); 
         }
         if(frame % 70 == 0 && Crafty("Kamikaze").length < 1){
             Crafty.e("Kamikaze");   
         }
-        if(frame % 80 == 0  && Crafty("Level1").length < 2){
+        if(frame % 80 == 0  && Crafty("Level1").length < 1){
             Crafty.e("Level1");
         }
-        if(frame % 90 == 0  && Crafty("Level2").length < 2){
+        if(frame % 90 == 0  && Crafty("Level2").length < 1){
             Crafty.e("Level2");
         }
     };

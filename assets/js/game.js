@@ -21,6 +21,6 @@ $(function(){
     bars.shield.progressbar({
         value: 0
     });
-   
+    //$('#interface').hide();
     Crafty.scene("Level1");
 });
