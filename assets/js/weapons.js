@@ -26,7 +26,7 @@ Crafty.c("Weapon1",{
         .attr({
             dmg:1
         });
-        //Crafty.audio.play("laser1");
+        Crafty.audio.play("laser1");
     } 
 });
 Crafty.c("Weapon2",{
@@ -40,6 +40,6 @@ Crafty.c("Weapon2",{
         }).attr({
             dmg:2
         });
-        //Crafty.audio.play("laser2");
+        Crafty.audio.play("laser2");
     } 
 });
