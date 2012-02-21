@@ -1,4 +1,4 @@
-Crafty.sprite("assets/img/ships.png",{
+Crafty.sprite(game_path + "/assets/img/ships.png",{
     //Gold
     ship1:[0,0,44,47],
     ship2:[47,0,40,47],
@@ -19,22 +19,22 @@ Crafty.sprite("assets/img/ships.png",{
     ship16:[340,48,67,47]
 });
 
-Crafty.sprite(5,13,"assets/img/weapon1_small.png",{
+Crafty.sprite(5,13,game_path + "/assets/img/weapon1_small.png",{
     laser1:[0,0] 
 });
-Crafty.sprite(27,36,"assets/img/weapon2.png",{
+Crafty.sprite(27,36,game_path + "/assets/img/weapon2.png",{
     laser2:[0,0] 
 });
-Crafty.sprite(29,"assets/img/dmg.png",{
+Crafty.sprite(29,game_path + "/assets/img/dmg.png",{
     dmg:[0,0]
 });
-Crafty.sprite(64,"assets/img/asteroid64.png",{
+Crafty.sprite(64,game_path + "/assets/img/asteroid64.png",{
     asteroid64:[0,0]
 });
-Crafty.sprite(32,"assets/img/asteroid32.png",{
+Crafty.sprite(32,game_path + "/assets/img/asteroid32.png",{
     asteroid32:[0,0]
 });
-Crafty.sprite(65,"assets/img/explosion.png",{
+Crafty.sprite(65,game_path + "/assets/img/explosion.png",{
     explosion1:[0,0],
     explosion2:[0,1],
     explosion3:[0,2],
