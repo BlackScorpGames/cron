@@ -179,6 +179,7 @@
         if(this.lives <= 0){
             this.destroy();
             this.infos.alert.show().text('Game Over!').effect('pulsate',500);
+            gameHooks.endGame(this.score);
             Crafty.pause();
         }else{
             this.reset();
@@ -214,5 +215,9 @@
     updateLives:function(){
         this.infos.lives.text("Lives: "+this.lives);
     }
-  
+    
 });
+
+var gameHooks = {
+    endGame: function (score) {}
+}
