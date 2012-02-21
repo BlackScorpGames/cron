@@ -3,17 +3,17 @@ Crafty.scene("Loading",function(){
     
     var toLoad = [
     //Images
-    "assets/img/bg.png",
-    "assets/img/ships.png",
-    "assets/img/weapon1_small.png",
-    "assets/img/weapon2.png",
-    "assets/img/dmg.png",
-    "assets/img/asteroid64.png",
-    "assets/img/asteroid32.png",
-    "assets/img/explosion.png",
-    "media/sounds/explode.mp3",
-    "media/sounds/explode.ogg",
-    "media/sounds/explode.wav",
+    game_path + "/assets/img/bg.png",
+    game_path + "/assets/img/ships.png",
+    game_path + "/assets/img/weapon1_small.png",
+    game_path + "/assets/img/weapon2.png",
+    game_path + "/assets/img/dmg.png",
+    game_path + "/assets/img/asteroid64.png",
+    game_path + "/assets/img/asteroid32.png",
+    game_path + "/assets/img/explosion.png",
+    game_path + "/media/sounds/explode.mp3",
+    game_path + "/media/sounds/explode.ogg",
+    game_path + "/media/sounds/explode.wav",
     ];
     Crafty.background("black");
     Crafty.e("2D","DOM","Text").css({
@@ -46,7 +46,7 @@ Crafty.scene("Loading",function(){
 //Level 1 Scene
 Crafty.scene("Level1",function(){
     //Setup background of level
-    Crafty.background("url(assets/img/bg.png)");
+    Crafty.background("url(" + game_path + "/assets/img/bg.png)");
     //Play background music and repeat
     Crafty.audio.play("space",-1);
     $('.level').text('Level: 1');
