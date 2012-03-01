@@ -1,20 +1,34 @@
 //Loading Scene
 Crafty.scene("Loading",function(){
-    
+
     var toLoad = [
     //Images
-    game_path + "/assets/img/bg.png",
-    game_path + "/assets/img/ships.png",
-    game_path + "/assets/img/weapon1_small.png",
-    game_path + "/assets/img/weapon2.png",
-    game_path + "/assets/img/dmg.png",
-    game_path + "/assets/img/asteroid64.png",
-    game_path + "/assets/img/asteroid32.png",
-    game_path + "/assets/img/explosion.png",
-    game_path + "/media/sounds/explode.mp3",
-    game_path + "/media/sounds/explode.ogg",
-    game_path + "/media/sounds/explode.wav",
+    game_path + "assets/img/bg.png",
+    game_path + "assets/img/ships.png",
+    game_path + "assets/img/weapon1_small.png",
+    game_path + "assets/img/weapon2.png",
+    game_path + "assets/img/dmg.png",
+    game_path + "assets/img/asteroid64.png",
+    game_path + "assets/img/asteroid32.png",
+    game_path + "assets/img/explosion.png",
+    //Sounds
+    game_path + "media/sounds/explode.mp3",
+    game_path + "media/sounds/explode.ogg",
+    game_path + "media/sounds/explodemini.mp3",
+    game_path + "media/sounds/explodemini.ogg",
+    game_path + "media/sounds/laser1.mp3",
+    game_path + "media/sounds/laser1.ogg",
+    game_path + "media/sounds/laser2.mp3",
+    game_path + "media/sounds/laser2.ogg",
+    game_path + "media/sounds/laser3.mp3",
+    game_path + "media/sounds/laser3.ogg",
+    game_path + "media/sounds/laser4.mp3",
+    game_path + "media/sounds/laser4.ogg",
+    //Music
+    game_path + "media/music/spaceship.mp3",
+    game_path + "media/music/spaceship.ogg",
     ];
+   
     Crafty.background("black");
     Crafty.e("2D","DOM","Text").css({
         "color":"#ffffff"
@@ -24,21 +38,24 @@ Crafty.scene("Loading",function(){
     }).css({
         "color":"#ffffff"
     });
+    
     Crafty.load(toLoad,
         function() {
-        //when loaded
-        //  Crafty.scene("Level1"); //go to Level1 scene
+    
+            //when loaded
+            $('#interface').show();
+            Crafty.scene("Level1"); //go to Level1 scene
         },
 
         function(e) {
-
+ 
             loaded.text(Math.round(e.percent)+" %");
         //progress
         },
 
         function(e) {
-            console.log(e);
- 
+            console.log("Error on loading: "+e.src);
+
         //uh oh, error loading
         }
         );
@@ -47,8 +64,7 @@ Crafty.scene("Loading",function(){
 Crafty.scene("Level1",function(){
     //Setup background of level
     Crafty.background("url(" + game_path + "/assets/img/bg.png)");
-    //Play background music and repeat
-    Crafty.audio.play("space",-1);
+   
     $('.level').text('Level: 1');
 
     var spotEnemys = function(frame){   
@@ -77,6 +93,7 @@ Crafty.scene("Level1",function(){
         Crafty.stage.elem.style.backgroundPosition ="0px "+frame.frame+"px";
         
     });
-   
+    //Play background music and repeat
+    Crafty.audio.play("space",-1);
   
 });
