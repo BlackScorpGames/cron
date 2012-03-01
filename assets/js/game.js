@@ -1,26 +1,14 @@
+/**
+ * This is the Main JS File
+ */
 $(function(){
     //Init Crafty
     Crafty.init(600,500);
     //Add Canvas Element
     Crafty.canvas.init();
-    //Define Sprites
-   
+   //Set canvas under interface
     Crafty.canvas._canvas.style.zIndex = '1';
     
-    var bars = {
-        hp:$('#hp'),
-        heat:$('#heat'),
-        shield:$('#shield')
-    }
-    bars.hp.progressbar({
-        value: 0
-    });
-    bars.heat.progressbar({
-        value: 0
-    });
-    bars.shield.progressbar({
-        value: 0
-    });
-    $('#interface').hide();
+    //play the loading scene
     Crafty.scene("Loading");
 });

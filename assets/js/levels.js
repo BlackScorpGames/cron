@@ -1,6 +1,10 @@
+/**
+ * This file describe different scenes
+ */
 //Loading Scene
 Crafty.scene("Loading",function(){
 
+    //Define resources to load
     var toLoad = [
     //Images
     game_path + "assets/img/bg.png",
@@ -29,39 +33,56 @@ Crafty.scene("Loading",function(){
     game_path + "media/music/spaceship.ogg",
     ];
    
-    Crafty.background("black");
-    Crafty.e("2D","DOM","Text").css({
-        "color":"#ffffff"
-    }).text("Loading..");
-    var loaded =  Crafty.e("2D","DOM","Text").attr({
-        x:100
-    }).css({
-        "color":"#ffffff"
+   //Setup background image
+    Crafty.background("url("+game_path+"assets/img/loading.jpg) black");
+    
+    //Select DOM elements
+    var loading = $('#loading');
+    var bar = $('#load');
+    var button = $('.button');
+    var text = bar.find('.text');
+    
+    //Display loading interface
+    loading.show();
+    //Setup progressbar
+    bar.progressbar({
+        value:0
+    });
+    //Bind click event on button
+    button.live('click',function(){
+        //Hide loading interface
+        loading.hide();
+        //Start scene level 1
+        Crafty.scene("Level1");  
     });
     
     Crafty.load(toLoad,
         function() {
-    
-            //when loaded
-            $('#interface').show();
-            Crafty.scene("Level1"); //go to Level1 scene
+            //Everything is loaded
+            bar.fadeOut(2000,function(){
+                button.show();
+            });
         },
 
         function(e) {
- 
-            loaded.text(Math.round(e.percent)+" %");
-        //progress
+            //update progress
+            text.text("Loading... "+~~e.percent+"%");
+            bar.progressbar({
+                value:~~e.percent
+            });
+        
         },
 
         function(e) {
+            //uh oh, error loading
             console.log("Error on loading: "+e.src);
-
-        //uh oh, error loading
         }
         );
 });
 //Level 1 Scene
 Crafty.scene("Level1",function(){
+    //Display interface
+    $('#interface').show();
     //Setup background of level
     Crafty.background("url(" + game_path + "/assets/img/bg.png)");
    
@@ -70,7 +91,7 @@ Crafty.scene("Level1",function(){
     var spotEnemys = function(frame){   
         //Spot each 50th Fram one Asteroid
  
-        if(frame % 50 == 0 && Crafty("Asteroid").length < 1){
+        if(frame % 50 == 0 && Crafty("Asteroid").length < 1 && Crafty("SmallAsteroid").length < 1){
             Crafty.e("Asteroid"); 
         }
         if(frame % 70 == 0 && Crafty("Kamikaze").length < 1){
