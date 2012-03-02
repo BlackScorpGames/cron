@@ -3,36 +3,12 @@
  */
 //Loading Scene
 Crafty.scene("Loading",function(){
+   var toLoad = [];
+    for(var i in Crafty.assets){
+        toLoad.push(i);
+    }
 
-    //Define resources to load
-    var toLoad = [
-    //Images
-    game_path + "assets/img/bg.png",
-    game_path + "assets/img/ships.png",
-    game_path + "assets/img/weapon1_small.png",
-    game_path + "assets/img/weapon2.png",
-    game_path + "assets/img/dmg.png",
-    game_path + "assets/img/asteroid64.png",
-    game_path + "assets/img/asteroid32.png",
-    game_path + "assets/img/explosion.png",
-    //Sounds
-    game_path + "media/sounds/explode.mp3",
-    game_path + "media/sounds/explode.ogg",
-    game_path + "media/sounds/explodemini.mp3",
-    game_path + "media/sounds/explodemini.ogg",
-    game_path + "media/sounds/laser1.mp3",
-    game_path + "media/sounds/laser1.ogg",
-    game_path + "media/sounds/laser2.mp3",
-    game_path + "media/sounds/laser2.ogg",
-    game_path + "media/sounds/laser3.mp3",
-    game_path + "media/sounds/laser3.ogg",
-    game_path + "media/sounds/laser4.mp3",
-    game_path + "media/sounds/laser4.ogg",
-    //Music
-    game_path + "media/music/spaceship.mp3",
-    game_path + "media/music/spaceship.ogg",
-    ];
-   
+    
    //Setup background image
     Crafty.background("url("+game_path+"assets/img/loading.jpg) black");
     
@@ -65,6 +41,7 @@ Crafty.scene("Loading",function(){
         },
 
         function(e) {
+        
             //update progress
             text.text("Loading... "+~~e.percent+"%");
             bar.progressbar({
@@ -78,6 +55,7 @@ Crafty.scene("Loading",function(){
             console.log("Error on loading: "+e.src);
         }
         );
+           
 });
 //Level 1 Scene
 Crafty.scene("Level1",function(){
@@ -94,6 +72,7 @@ Crafty.scene("Level1",function(){
         if(frame % 50 == 0 && Crafty("Asteroid").length < 1 && Crafty("SmallAsteroid").length < 1){
             Crafty.e("Asteroid"); 
         }
+        
         if(frame % 70 == 0 && Crafty("Kamikaze").length < 1){
             Crafty.e("Kamikaze");   
         }

@@ -3123,10 +3123,11 @@ Crafty.extend({
 
 		if (!this._events[id + obj + type + fn]) this._events[id + obj + type + fn] = afn;
 		else return;
-
+                 
 		if (obj.attachEvent) { //IE
 			obj.attachEvent('on' + type, afn);
 		} else { //Everyone else
+                   
 			obj.addEventListener(type, afn, false);
 		}
 	},
@@ -6142,7 +6143,7 @@ Crafty.c("particles", {
 
 			var elem,
 				key,
-				audio = new Audio(),
+				audio = new Audio(""),
 				canplay,
 				i = 0,
 				sounds = [];
@@ -6168,6 +6169,7 @@ Crafty.c("particles", {
 								url = source;
 								break;
 							}
+                                                        
 						}
 					} else {
 						url = id[key];
@@ -7203,63 +7205,63 @@ Crafty.c("Text", {
 	* @see Crafty.assets
 	*/
 	load: function (data, oncomplete, onprogress, onerror) {
-		var i = 0, l = data.length, current, obj, total = l, j = 0, ext,event;
+            
+		var i = 0, l = data.length, current, obj, total = l, j = 0, ext = "",event;
+              
 		for (; i < l; ++i) {
+                        obj = new Object();
+                        
 			current = data[i];
+                        console.log(current);
 			ext = current.substr(current.lastIndexOf('.') + 1).toLowerCase();
 
 			if (Crafty.support.audio && (ext === "mp3" || ext === "wav" || ext === "ogg" || ext === "mp4")) {
-				obj = new Audio("");
-                                obj.src = current;
-                                event = 'canplay';
-                               
+                                 obj = new Audio(current);
+                                 
+                                 event = 'canplaythrough'; 
+                                //event = 'play';
+                                 this.assets[current] = obj;
 				//Chrome doesn't trigger onload on audio, see http://code.google.com/p/chromium/issues/detail?id=77794
-				if (navigator.userAgent.indexOf('Chrome') != -1) j++;
-                                
-                                if(obj.canPlayType(Crafty.audio.type[ext]) == "" || obj.canPlayType(Crafty.audio.type[ext] == "no"))
-                                   total--;
-      
-                                   
-                                
+				if (navigator.userAgent.indexOf('Chrome') != -1) j++;    
 			} else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") {
 				obj = new Image();
 				obj.src = current;
                                 event = 'load';
-			} else {
+                                this.assets[current] = obj;
+                        } else {
 				total--;
 				continue; //skip if not applicable
 			}
-                       
-			
-                      
                         
-			obj.addEventListener(event,function(){  
+                        function progress(){
+                            
                             ++j;
-				//if progress callback, give information of assets loaded, total and percent
-				if (onprogress) {
-					onprogress.call(this, {loaded: j, total: total, percent: (j / total * 100),src:this.src});
-				}
-				if (j === total) {
-					if (oncomplete) oncomplete();
-				}
-                            },false);
-                        obj.addEventListener('error',function(){
-                            j--;
-   
-                            if (onerror) {
-					onerror.call(this, {loaded: j, total: total, percent: (j / total * 100),src:this.src});
-				} else {
-					j++;
-					if (j === total) {
-						if (oncomplete) oncomplete();
-					}
-				}
-                               
-                            },false);
- 
-                        //add to global asset collection
-			this.assets[current] = obj;
+                            //if progress callback, give information of assets loaded, total and percent
+				if (onprogress) 
+					onprogress.call(this, {loaded: j, total: total, percent: (j / total * 100),obj:this});
+				console.log(this);
+                              
+                            if(j === total && oncomplete) oncomplete();
+                        };
+                        
+                        function error(){
+                            if (onerror) 
+					onerror.call(this, {loaded: j, total: total, percent: (j / total * 100),obj:this});
+				
+                            j++;
+                              if(j === total && oncomplete) oncomplete();
+                        };
+                     if (obj.attachEvent) { //IE
+			obj.attachEvent('on' + event, progress);
+                        obj.attachEvent('onerror', error);
+                      } else { //Everyone else
+			obj.addEventListener(event, progress, false);
+                        obj.addEventListener('error', error, false);
+                      }
+                      
+         
 		}
+        
 	},
 	/**@
 	* #Crafty.modules

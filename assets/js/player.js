@@ -82,11 +82,8 @@
                     this.shoot();
                 }else{
                    if(this.heat.current > 0) //Cooldown the weapon
-                    this.heat.current = Math.round(this.heat.current*29/30); 
+                    this.heat.current = ~~(this.heat.current*29/30); 
                 }
-                    
-            
-                
 
                 this.updateHeat();
                 
@@ -147,7 +144,7 @@
         }); 
      
         if(this.heat.current < this.heat.max)
-            this.heat.current += 2;
+            this.heat.current ++;
          
         if(this.heat.current >= this.heat.max){
             this.infos.alert.text('Weapon Overheated!').show().effect('pulsate',500);
