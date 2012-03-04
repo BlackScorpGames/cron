@@ -7206,21 +7206,27 @@ Crafty.c("Text", {
 	*/
 	load: function (data, oncomplete, onprogress, onerror) {
             
-		var i = 0, l = data.length, current, obj, total = l, j = 0, ext = "",event;
+		var i = 0, l = data.length, current, obj, total = l, j = 0, ext = "",event,canplay;
               
 		for (; i < l; ++i) {
-                        obj = new Object();
+                        
                         
 			current = data[i];
-                        console.log(current);
+                        event = '';
+                        obj ={};
 			ext = current.substr(current.lastIndexOf('.') + 1).toLowerCase();
 
 			if (Crafty.support.audio && (ext === "mp3" || ext === "wav" || ext === "ogg" || ext === "mp4")) {
                                  obj = new Audio(current);
                                  
-                                 event = 'canplaythrough'; 
-                                //event = 'play';
-                                 this.assets[current] = obj;
+                                 event = 'loadstart'; 
+                                 canplay = obj.canPlayType(Crafty.audio.type[ext]);
+                                if(canplay !== "" && canplay !== "no"){
+                                   this.assets[current] = obj; 
+                                }else{
+                                    j--;
+                                    delete obj;
+                                }
 				//Chrome doesn't trigger onload on audio, see http://code.google.com/p/chromium/issues/detail?id=77794
 				if (navigator.userAgent.indexOf('Chrome') != -1) j++;    
 			} else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") {
@@ -7232,36 +7238,38 @@ Crafty.c("Text", {
 				total--;
 				continue; //skip if not applicable
 			}
-                        
-                        function progress(){
+                        //Progress function
+                        function pro(){
                             
                             ++j;
                             //if progress callback, give information of assets loaded, total and percent
 				if (onprogress) 
-					onprogress.call(this, {loaded: j, total: total, percent: (j / total * 100),obj:this});
-				console.log(this);
-                              
+					onprogress({loaded: j, total: total, percent: (j / total * 100),obj:this});
+				
                             if(j === total && oncomplete) oncomplete();
                         };
-                        
-                        function error(){
+                        //Error function
+                        function err(){
                             if (onerror) 
-					onerror.call(this, {loaded: j, total: total, percent: (j / total * 100),obj:this});
+					onerror({loaded: j, total: total, percent: (j / total * 100),obj:this});
 				
                             j++;
                               if(j === total && oncomplete) oncomplete();
                         };
+                        
                      if (obj.attachEvent) { //IE
-			obj.attachEvent('on' + event, progress);
-                        obj.attachEvent('onerror', error);
+                         
+			obj.attachEvent('on' + event, pro);
+                        obj.attachEvent('onerror', err);
                       } else { //Everyone else
-			obj.addEventListener(event, progress, false);
-                        obj.addEventListener('error', error, false);
+			obj.addEventListener(event, pro, false);
+                        obj.addEventListener('error', err, false);
                       }
                       
          
 		}
-        
+       
+       
 	},
 	/**@
 	* #Crafty.modules
