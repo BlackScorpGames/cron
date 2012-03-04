@@ -6163,9 +6163,9 @@ Crafty.c("particles", {
 							//get the file extension
 							ext = source.substr(source.lastIndexOf('.') + 1).toLowerCase();
 							canplay = audio.canPlayType(this.type[ext]);
-
+                                                        
 							//if browser can play this type, use it
-							if (canplay !== "" && canplay !== "no") {
+							if (canplay !== "" && canplay !== "no"&& canplay !== "maybe") {
 								url = source;
 								break;
 							}
@@ -6199,7 +6199,7 @@ Crafty.c("particles", {
 					canplay = audio.canPlayType(this.type[ext]);
 
 					//if browser can play this type, use it
-					if (canplay !== "" && canplay !== "no") {
+					if (canplay !== "" && canplay !== "no" && canplay !== "maybe") {
 						url = source;
 						break;
 					}
@@ -7221,14 +7221,11 @@ Crafty.c("Text", {
                                  
                                  event = 'loadstart'; 
                                  canplay = obj.canPlayType(Crafty.audio.type[ext]);
-                                if(canplay !== "" && canplay !== "no"){
+                                 
+                                if(canplay !== "" && canplay !== "no" && canplay !=="maybe"){
                                    this.assets[current] = obj; 
-                                }else{
-                                    j--;
-                                    delete obj;
                                 }
-				//Chrome doesn't trigger onload on audio, see http://code.google.com/p/chromium/issues/detail?id=77794
-				if (navigator.userAgent.indexOf('Chrome') != -1) j++;    
+				
 			} else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") {
 				obj = new Image();
 				obj.src = current;
