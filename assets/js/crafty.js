@@ -6165,7 +6165,7 @@ Crafty.c("particles", {
 							canplay = audio.canPlayType(this.type[ext]);
                                                         
 							//if browser can play this type, use it
-							if (canplay !== "" && canplay !== "no"&& canplay !== "maybe") {
+							if (canplay !== "" && canplay !== "no") {
 								url = source;
 								break;
 							}
@@ -6199,7 +6199,7 @@ Crafty.c("particles", {
 					canplay = audio.canPlayType(this.type[ext]);
 
 					//if browser can play this type, use it
-					if (canplay !== "" && canplay !== "no" && canplay !== "maybe") {
+					if (canplay !== "" && canplay !== "no") {
 						url = source;
 						break;
 					}
@@ -7219,10 +7219,11 @@ Crafty.c("Text", {
 			if (Crafty.support.audio && (ext === "mp3" || ext === "wav" || ext === "ogg" || ext === "mp4")) {
                                  obj = new Audio(current);
                                  
-                                 event = 'loadstart'; 
+                                 event = 'canplay'; 
                                  canplay = obj.canPlayType(Crafty.audio.type[ext]);
                                  
-                                if(canplay !== "" && canplay !== "no" && canplay !=="maybe"){
+                                if(canplay !== "" && canplay !== "no"){
+                                    obj.load();
                                    this.assets[current] = obj; 
                                 }
 				
