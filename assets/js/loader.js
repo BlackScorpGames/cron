@@ -65,8 +65,9 @@ Crafty.extend({
            
 
             if (Crafty.support.audio && (ext === "mp3" || ext === "wav" || ext === "ogg" || ext === "mp4")) {
-                event = 'loadedmetadata'; 	
-                if (navigator.userAgent.indexOf('Chrome') != -1 && ext !== "mp3") j++;
+                event = 'loadedmetadata'; 
+                //Chrome has problems with mp3
+                if (navigator.userAgent.indexOf('Chrome') != -1 && ext === "mp3") j++;
             } else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") {
                 event = 'load';    
             } else {
