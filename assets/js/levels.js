@@ -31,7 +31,7 @@ Crafty.scene("Loading",function(){
         //Start scene level 1
         Crafty.scene("Level1");  
     });
-   
+    
     Crafty.load(toLoad,
         function() {
             //Everything is loaded
