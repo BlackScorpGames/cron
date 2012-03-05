@@ -19,7 +19,7 @@ Crafty.extend({
             var audio,source,ext,url,canplay;
             if(arguments.length === 1 && typeof id === "object"){
                 for(var i in id){
-                    audio = document.createElement('audio');
+                    audio = new Audio("");
                     audio.id = i;
                     audio.autobuffer = true;
                     audio.preload = "auto";
@@ -30,7 +30,7 @@ Crafty.extend({
                         url = id[i][src];
                         ext = url.substr(url.lastIndexOf('.') + 1).toLowerCase();	
                         canplay = audio.canPlayType(this.type[ext]);
-                        if(canplay === "probably"){
+                        if(canplay !== "" && canplay !== "no"){
                             source = document.createElement('source');
                             source.src = url;
                             source.type=this.srcType[ext];
