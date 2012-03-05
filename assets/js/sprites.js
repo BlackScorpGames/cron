@@ -1,3 +1,9 @@
+Crafty.sprite(game_path + "assets/img/loading.jpg",{
+    loadingbg:[0,0]
+})
+Crafty.sprite(game_path + "assets/img/bg.png",{
+    spacebg1:[0,0]
+})
 Crafty.sprite(game_path + "assets/img/ships.png",{
     //Gold
     ship1:[0,0,44,47],

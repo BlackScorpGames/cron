@@ -7219,9 +7219,11 @@ Crafty.c("Text", {
 			if (Crafty.support.audio && (ext === "mp3" || ext === "wav" || ext === "ogg" || ext === "mp4")) {
                                  obj = new Audio(current);
                                  
-                                 event = 'loadstart'; 
+                                 event = 'canplay'; 
                                  canplay = obj.canPlayType(Crafty.audio.type[ext]);
+                                 
                                 if(canplay !== "" && canplay !== "no"){
+                                    obj.load();
                                    this.assets[current] = obj; 
                                 }else{
                                     j--;
