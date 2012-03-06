@@ -2,7 +2,7 @@ Crafty.extend({
     audio:{
         sounds:{},
         type: {
-            'mp3': 'audio/mpeg',
+            'mp3': 'audio/mpeg; codecs="mp3"',
             'ogg': 'audio/ogg; codecs="vorbis"',
             'wav': 'audio/wav; codecs="1"',
             'mp4': 'audio/mp4; codecs="mp4a.40.2"'
@@ -20,7 +20,7 @@ Crafty.extend({
             var audio,source,ext,path,canplay;
             if(arguments.length === 1 && typeof id === "object"){
                 for(var i in id){
-                    audio = new Audio("");
+                    audio = document.createElement('audio');
                     audio.id = i;
                     //old attribute
                     audio.autobuffer = true;
@@ -36,14 +36,18 @@ Crafty.extend({
                             source.src = path;
                             source.type=this.srcType[ext];
                             audio.appendChild(source); 
+                           
                             if (!Crafty.assets[path]) Crafty.assets[path] = audio;   
                         }
-                      
+                     
                     }
                     this.sounds[i] = {
                         obj:audio,
                         played:0
                     } 
+                    audio.load();
+                 
+                 
                 }
                
               

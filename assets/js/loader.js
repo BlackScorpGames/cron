@@ -66,9 +66,12 @@ Crafty.extend({
            
 
             if (Crafty.support.audio && (ext === "mp3" || ext === "wav" || ext === "ogg" || ext === "mp4")) {
-                event = 'oncanplaythrough';  
+                event = 'loadedmetadata';  
+             
                 //Chrome has problems with mp3 canplaystate is maybe
                 if (navigator.userAgent.indexOf('Chrome') != -1 && ext === "mp3") j++;
+                
+                 
             } else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") {
                 event = 'load';    
             } else {
@@ -78,7 +81,7 @@ Crafty.extend({
             
             //Progress function
             function pro(){
-                         
+                      
                 ++j;
                 //if progress callback, give information of assets loaded, total and percent
                 if (onprogress) 
@@ -92,7 +95,7 @@ Crafty.extend({
                 if(j === total && oncomplete) oncomplete();
             };
             //Error function
-            function err(){
+            function err(e){
                
                 if (onerror) 
                     onerror({
