@@ -2,7 +2,7 @@ Crafty.extend({
     audio:{
         sounds:{},
         type: {
-            'mp3': 'audio/mpeg;',
+            'mp3': 'audio/mpeg',
             'ogg': 'audio/ogg; codecs="vorbis"',
             'wav': 'audio/wav; codecs="1"',
             'mp4': 'audio/mp4; codecs="mp4a.40.2"'
@@ -13,33 +13,32 @@ Crafty.extend({
             'wav': 'audio/wav',
             'mp4': 'audio/mp4'
         },
-        
+        volume:1, //Global Volume
         add:function(id,url){
-            if (!Crafty.support.audio) return this;
-            var audio,source,ext,url,canplay;
+            if (!Crafty.support.audio) return;
+            
+            var audio,source,ext,path,canplay;
             if(arguments.length === 1 && typeof id === "object"){
                 for(var i in id){
                     audio = new Audio("");
                     audio.id = i;
+                    //old attribute
                     audio.autobuffer = true;
                     audio.preload = "auto";
-                    audio.volume = 1;
-                   
+                    audio.volume = Crafty.audio.volume;
                    
                     for(var src in id[i]){
-                        url = id[i][src];
-                        ext = url.substr(url.lastIndexOf('.') + 1).toLowerCase();	
+                        path = id[i][src];
+                        ext = path.substr(path.lastIndexOf('.') + 1).toLowerCase();	
                         canplay = audio.canPlayType(this.type[ext]);
-                        if(canplay !== "" && canplay !== "no"){
+                        if(canplay !== "" && canplay !== "no" ){
                             source = document.createElement('source');
-                            source.src = url;
+                            source.src = path;
                             source.type=this.srcType[ext];
-                            
                             audio.appendChild(source); 
-                            if (!Crafty.assets[url]) Crafty.assets[url] = audio;
-                           
-                            
+                            if (!Crafty.assets[path]) Crafty.assets[path] = audio;   
                         }
+                      
                     }
                     this.sounds[i] = {
                         obj:audio,
@@ -61,10 +60,9 @@ Crafty.extend({
             
             var s = this.sounds[id];
             
-            s.obj.volume = 1 || volume;   
+            s.obj.volume = Crafty.audio.volume || volume;   
             if(s.obj.currentTime) s.obj.currentTime = 0;
             
-            // s.obj.mozCurrentSampleOffset = -10;
             s.obj.play(); 
             s.played ++;
             

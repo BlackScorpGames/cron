@@ -58,15 +58,16 @@ Crafty.extend({
             event = '';
             ext = current.substr(current.lastIndexOf('.') + 1).toLowerCase();
             if(this.assets[current]){
-                obj =  this.assets[current];  
+                obj = this.assets[current];  
+                
             }else{
                 obj =null;
             }
            
 
             if (Crafty.support.audio && (ext === "mp3" || ext === "wav" || ext === "ogg" || ext === "mp4")) {
-                event = 'loadedmetadata'; 
-                //Chrome has problems with mp3
+                event = 'oncanplaythrough';  
+                //Chrome has problems with mp3 canplaystate is maybe
                 if (navigator.userAgent.indexOf('Chrome') != -1 && ext === "mp3") j++;
             } else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") {
                 event = 'load';    
@@ -92,6 +93,7 @@ Crafty.extend({
             };
             //Error function
             function err(){
+               
                 if (onerror) 
                     onerror({
                         loaded: j, 
@@ -103,7 +105,7 @@ Crafty.extend({
                 j++;
                 if(j === total && oncomplete) oncomplete();
             };
-                        
+          
             if (obj.attachEvent) { //IE
                          
                 obj.attachEvent('on' + event, pro);
@@ -112,7 +114,7 @@ Crafty.extend({
                 obj.addEventListener(event, pro, false);
                 obj.addEventListener('error', err, false);
             }
-                      
+                 
          
         }
        

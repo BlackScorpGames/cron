@@ -8,7 +8,7 @@ Crafty.scene("Loading",function(){
         toLoad.push(i);
     }
     
-    
+  
    //Setup background image
     Crafty.background("url("+game_path+"assets/img/loading.jpg) black");
     
@@ -53,7 +53,8 @@ Crafty.scene("Loading",function(){
         function(e) {
           
             //uh oh, error loading
-            console.log("Error on loading: "+e.obj.src);
+            console.log("Error on loading: ");
+            console.log(e.obj);
         }
         );
            
