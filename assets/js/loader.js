@@ -51,11 +51,40 @@ Crafty.extend({
 	*/
     load: function (data, oncomplete, onprogress, onerror) {
             
-        var i = 0, l = data.length, current, obj, total = l, j = 0, ext = "",event,canplay;
-              
+        var i = 0, l = data.length, current, obj, total = l, j = 0, ext = "" ,audio,canplay;
+         
+        //Progress function
+        function pro(){
+               
+            ++j;
+            //if progress callback, give information of assets loaded, total and percent
+            if (onprogress) 
+                onprogress.call(this,{
+                    loaded: j, 
+                    total: total, 
+                    percent: (j / total * 100),
+                    obj:this
+                });
+				
+            if(j === total && oncomplete) oncomplete();
+        };
+        //Error function
+        function err(){
+               
+            if (onerror) 
+                onerror.call(this,{
+                    loaded: j, 
+                    total: total, 
+                    percent: (j / total * 100),
+                    obj:this
+                });
+				
+            j++;
+            if(j === total && oncomplete) oncomplete();
+        };
+           
         for (; i < l; ++i) {       
             current = data[i];
-            event = '';
             ext = current.substr(current.lastIndexOf('.') + 1).toLowerCase();
             if(this.assets[current]){
                 obj = this.assets[current];  
@@ -63,62 +92,34 @@ Crafty.extend({
             }else{
                 obj =null;
             }
-           
-
             if (Crafty.support.audio && (ext === "mp3" || ext === "wav" || ext === "ogg" || ext === "mp4")) {
-                event = 'loadedmetadata';  
-             
-                //Chrome has problems with mp3 canplaystate is maybe
-                if (navigator.userAgent.indexOf('Chrome') != -1 && ext === "mp3") j++;
-                
-                 
-            } else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") {
-                event = 'load';    
+                if(!obj){
+                    obj = document.createElement('audio');
+                    obj.preload = "auto";
+                    obj.volume = Crafty.audio.volume;
+                    canplay = obj.canPlayType(Crafty.audio.types[ext]);
+                    if(canplay !== "" && canplay !== "no"){
+                        obj.src =current;
+                    }
+                    obj.load();
+                    if (!Crafty.assets[current]) Crafty.assets[current] = obj;   
+                }
+                //Chrome does not support autoload 
+                if (navigator.userAgent.indexOf('Chrome') != -1) pro();
+                obj.onloadeddata=pro;
+
+            } else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") { 
+                if(!obj){
+                    obj = new Image();
+                    obj.src = current;
+                    if (!Crafty.assets[current]) Crafty.assets[current] = obj;   
+                }
+                obj.onload = pro;
             } else {
                 total--;
                 continue; //skip if not applicable
             }
-            
-            //Progress function
-            function pro(){
-                      
-                ++j;
-                //if progress callback, give information of assets loaded, total and percent
-                if (onprogress) 
-                    onprogress({
-                        loaded: j, 
-                        total: total, 
-                        percent: (j / total * 100),
-                        obj:this
-                    });
-				
-                if(j === total && oncomplete) oncomplete();
-            };
-            //Error function
-            function err(e){
-               
-                if (onerror) 
-                    onerror({
-                        loaded: j, 
-                        total: total, 
-                        percent: (j / total * 100),
-                        obj:this
-                    });
-				
-                j++;
-                if(j === total && oncomplete) oncomplete();
-            };
-          
-            if (obj.attachEvent) { //IE
-                         
-                obj.attachEvent('on' + event, pro);
-                obj.attachEvent('onerror', err);
-            } else { //Everyone else
-                obj.addEventListener(event, pro, false);
-                obj.addEventListener('error', err, false);
-            }
-                 
-         
+            obj.onerror = err; 
         }
        
        

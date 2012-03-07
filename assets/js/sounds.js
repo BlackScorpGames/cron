@@ -82,3 +82,10 @@ Crafty.audio.add({
     ]
 });
 
+Crafty.audio.add("space2", game_path + "media/music/through-space.mp3");
+
+Crafty.audio.add("space3",[
+    game_path + "media/music/through-space.mp3",
+    game_path + "media/music/through-space.ogg"
+    ]);
+Crafty.audio.add("space4");

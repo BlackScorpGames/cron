@@ -55,6 +55,7 @@ Crafty.scene("Loading",function(){
             //uh oh, error loading
             console.log("Error on loading: ");
             console.log(e.obj);
+
         }
         );
            

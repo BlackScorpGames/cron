@@ -1070,7 +1070,9 @@
 		}
 		return id;
 	}
-
+        if(window.opera){
+                console = {log:opera.postError}
+         }
 	/**
 * Clone an Object
 */
