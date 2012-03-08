@@ -3,13 +3,13 @@
  */
 //Loading Scene
 Crafty.scene("Loading",function(){
-   var toLoad = [];
+    var toLoad = [];
+    toLoad.push(game_path + "assets/img/loading.jpg", game_path + "assets/img/bg.png");
     for(var i in Crafty.assets){
         toLoad.push(i);
     }
-    
-  
-   //Setup background image
+      
+    //Setup background image
     Crafty.background("url("+game_path+"assets/img/loading.jpg) black");
     
     //Select DOM elements
@@ -31,7 +31,7 @@ Crafty.scene("Loading",function(){
         //Start scene level 1
         Crafty.scene("Level1");  
     });
-    
+   
     Crafty.load(toLoad,
         function() {
             //Everything is loaded
@@ -39,26 +39,22 @@ Crafty.scene("Loading",function(){
                 button.show();
             });
         },
-
         function(e) {
-        
             //update progress
-            text.text("Loading... "+~~e.percent+"%");
+            text.text("Loading "+e.src.substr(e.src.lastIndexOf('/') + 1).toLowerCase()+" Loaded: "+~~e.percent+"%");
             bar.progressbar({
                 value:~~e.percent
             });
-        
+         //   console.log("Loaded: ");
+         // console.log(e.src);
         },
-
         function(e) {
-          
             //uh oh, error loading
             console.log("Error on loading: ");
-            console.log(e.obj);
-
+            console.log(e.src);
         }
         );
-           
+
 });
 //Level 1 Scene
 Crafty.scene("Level1",function(){

@@ -1,52 +1,68 @@
 Crafty.extend({
     audio:{
         sounds:{},
-        type: {
-            'mp3': 'audio/mpeg; codecs="mp3"',
-            'ogg': 'audio/ogg; codecs="vorbis"',
-            'wav': 'audio/wav; codecs="1"',
-            'mp4': 'audio/mp4; codecs="mp4a.40.2"'
-        },
-        srcType: {
-            'mp3': 'audio/mpeg',
-            'ogg': 'audio/ogg',
-            'wav': 'audio/wav',
-            'mp4': 'audio/mp4'
+        supported:{},
+        codecs :{ // Chart from jPlayer
+            ogg:  'audio/ogg; codecs="vorbis"', //OGG
+            wav: 'audio/wav; codecs="1"', // PCM
+            webma:  'audio/webm; codecs="vorbis"',// WEBM
+            mp3:  'audio/mpeg; codecs="mp3"', //MP3
+            m4a: 'audio/mp4; codecs="mp4a.40.2"'// AAC / MP4
         },
         volume:1, //Global Volume
         muted:false,
+        canPlay:function(){
+            var audio = this.audioElement(),canplay;
+            for(var i in this.codecs){
+                canplay = audio.canPlayType(this.codecs[i]);
+                if(canplay !== "" && canplay !== "no"){
+                    this.supported[i] = true;
+                }else{
+                    this.supported[i] = false;
+                }
+            }
+          
+        },
+        audioElement:function(){
+            //IE does not support Audio Object
+            return typeof Audio !== 'undefined' ? new Audio() : document.createElement('audio');
+        },
         add:function(id,url){
+            Crafty.support.audio = !!this.audioElement().canPlayType; //Setup audio support
             if (!Crafty.support.audio) return;
+            
+            this.canPlay(); //Setup supported Extensions
             
             var audio,source,ext,path;
             if(arguments.length === 1 && typeof id === "object"){
                 for(var i in id){
-                    audio = document.createElement('audio');
-                    audio.id = i;
-                    audio.preload = "auto";
-                    audio.volume = Crafty.audio.volume;
                     for(var src in id[i]){
+                        audio = this.audioElement();
+                        audio.id = i;
+                        audio.preload = "auto";
+                        audio.volume = Crafty.audio.volume;
                         path = id[i][src];
-                        ext = path.substr(path.lastIndexOf('.') + 1).toLowerCase();	
-                        source = document.createElement('source');
-                        source.src = path;
-                        source.type=this.srcType[ext];
-                        audio.appendChild(source); 
+                        ext = path.substr(path.lastIndexOf('.') + 1).toLowerCase();
+                        if(this.supported[ext]){
+                            audio.src = path;
+                            if (!Crafty.assets[path]) Crafty.assets[path] = audio; 
+                            this.sounds[i] = {
+                                obj:audio,
+                                played:0
+                            } 
+                        }
+                        
                     }
-                    this.sounds[i] = {
-                        obj:audio,
-                        played:0
-                    } 
-                    audio.load();
-                    
                 }          
             }
             if(typeof id === "string"){
-                audio = document.createElement('audio');
+               
+                audio = this.audioElement();
                 audio.id = id;
                 audio.preload = "auto";
                 audio.volume = Crafty.audio.volume;
-                if(typeof url === "string"){
+                ext = url.substr(url.lastIndexOf('.') + 1).toLowerCase();
+                if(typeof url === "string" && this.supported[ext]){
                     audio.src = url;
                     if (!Crafty.assets[url]) Crafty.assets[url] = audio;   
                 }
@@ -67,10 +83,10 @@ Crafty.extend({
                     obj:audio,
                     played:0
                 } 
-                audio.load();
+               
             }
           
-   
+
         },
         play:function(id,repeat,volume){
             if(repeat == 0 || !Crafty.support.audio || !this.sounds[id]) return;

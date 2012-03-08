@@ -52,10 +52,18 @@ Crafty.extend({
     load: function (data, oncomplete, onprogress, onerror) {
             
         var i = 0, l = data.length, current, obj, total = l, j = 0, ext = "" ,audio,canplay;
-         
+  
         //Progress function
         function pro(){
-               
+            
+           
+            var src = this.currentSrc || this.src;
+            if (this.removeEventListener) {  
+                this.removeEventListener('canplaythrough', pro, true);     
+            } else if (this.detachEvent)  {  
+                this.detachEvent('oncanplaythrough', pro);  
+            }
+            this.onload=null;
             ++j;
             //if progress callback, give information of assets loaded, total and percent
             if (onprogress) 
@@ -63,22 +71,22 @@ Crafty.extend({
                     loaded: j, 
                     total: total, 
                     percent: (j / total * 100),
-                    obj:this
+                    src:src
                 });
 				
             if(j === total && oncomplete) oncomplete();
         };
         //Error function
         function err(){
-               
+            var src = this.src;
             if (onerror) 
                 onerror.call(this,{
                     loaded: j, 
                     total: total, 
                     percent: (j / total * 100),
-                    obj:this
+                    src:src
                 });
-				
+           		
             j++;
             if(j === total && oncomplete) oncomplete();
         };
@@ -86,40 +94,42 @@ Crafty.extend({
         for (; i < l; ++i) {       
             current = data[i];
             ext = current.substr(current.lastIndexOf('.') + 1).toLowerCase();
-            if(this.assets[current]){
-                obj = this.assets[current];  
+           
+            obj = this.assets[current] || null;   
+           
+            if (Crafty.support.audio && Crafty.audio.supported[ext]) {   
                 
-            }else{
-                obj =null;
-            }
-            if (Crafty.support.audio && (ext === "mp3" || ext === "wav" || ext === "ogg" || ext === "mp4")) {
                 if(!obj){
-                    obj = document.createElement('audio');
-                    obj.preload = "auto";
-                    obj.volume = Crafty.audio.volume;
-                    canplay = obj.canPlayType(Crafty.audio.types[ext]);
-                    if(canplay !== "" && canplay !== "no"){
-                        obj.src =current;
-                    }
-                    obj.load();
-                    if (!Crafty.assets[current]) Crafty.assets[current] = obj;   
-                }
-                //Chrome does not support autoload 
-                if (navigator.userAgent.indexOf('Chrome') != -1) pro();
-                obj.onloadeddata=pro;
-
-            } else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") { 
-                if(!obj){
-                    obj = new Image();
+                    var name = current.substr(current.lastIndexOf('/') + 1).toLowerCase();
+                    obj = Crafty.audio.audioElement();
+                    obj.id = name;
                     obj.src = current;
+                    if (!Crafty.assets[current]) Crafty.assets[current] = obj; 
+                    Crafty.audio.sounds[name] = {
+                        obj:obj,
+                        played:0
+                    } 
+                }
+                if (obj.addEventListener) {  
+                    obj.addEventListener('canplaythrough', pro, true);     
+                } else if (obj.attachEvent)  {  
+                    obj.attachEvent('oncanplaythrough', pro);  
+                }
+                obj.load();
+            } else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") { 
+                if(!obj) {
+                    obj = new Image();
                     if (!Crafty.assets[current]) Crafty.assets[current] = obj;   
                 }
-                obj.onload = pro;
+                obj.onload=pro;
+                obj.src = current; //setup src after onload function Opera/IE Bug
             } else {
                 total--;
                 continue; //skip if not applicable
             }
-            obj.onerror = err; 
+            obj.onerror = err;
+           
+  
         }
        
        
