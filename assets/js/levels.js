@@ -40,8 +40,9 @@ Crafty.scene("Loading",function(){
             });
         },
         function(e) {
+            var src = e.src ||"";
             //update progress
-            text.text("Loading "+e.src.substr(e.src.lastIndexOf('/') + 1).toLowerCase()+" Loaded: "+~~e.percent+"%");
+            text.text("Loading "+src.substr(src.lastIndexOf('/') + 1).toLowerCase()+" Loaded: "+~~e.percent+"%");
             bar.progressbar({
                 value:~~e.percent
             });
