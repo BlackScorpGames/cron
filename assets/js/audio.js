@@ -33,7 +33,7 @@ Crafty.extend({
             
             this.canPlay(); //Setup supported Extensions
             
-            var audio,source,ext,path;
+            var audio,ext,path;
             if(arguments.length === 1 && typeof id === "object"){
                 for(var i in id){
                     for(var src in id[i]){
@@ -56,33 +56,40 @@ Crafty.extend({
                 }          
             }
             if(typeof id === "string"){
-               
                 audio = this.audioElement();
                 audio.id = id;
                 audio.preload = "auto";
                 audio.volume = Crafty.audio.volume;
-                ext = url.substr(url.lastIndexOf('.') + 1).toLowerCase();
-                if(typeof url === "string" && this.supported[ext]){
-                    audio.src = url;
-                    if (!Crafty.assets[url]) Crafty.assets[url] = audio;   
+              
+                if(typeof url === "string"){
+                    ext = url.substr(url.lastIndexOf('.') + 1).toLowerCase();
+                    if(this.supported[ext]){
+                        audio.src = url;
+                        if (!Crafty.assets[url]) Crafty.assets[url] = audio;  
+                    }
+                  
                 }
              
                 if(typeof url === "object"){
-                    for(src in url){    
+                    for(src in url){   
+                        audio = this.audioElement();
+                        audio.id = id;
+                        audio.preload = "auto";
+                        audio.volume = Crafty.audio.volume;
                         path = url[src];
                         ext = path.substr(path.lastIndexOf('.') + 1).toLowerCase();	
-                        source = document.createElement('source');
-                        source.src = path;
-                        source.type=this.srcType[ext];
-                        audio.appendChild(source); 
-                        if (!Crafty.assets[path]) Crafty.assets[path] = audio;   
-                 
+                        if(this.supported[ext]){
+                            audio.src = path;
+                            if (!Crafty.assets[path]) Crafty.assets[path] = audio;   
+                            this.sounds[id] = {
+                                obj:audio,
+                                played:0
+                            } 
+                        }
+                       
                     }
                 }
-                this.sounds[id] = {
-                    obj:audio,
-                    played:0
-                } 
+               
                
             }
           
@@ -102,6 +109,11 @@ Crafty.extend({
                     s.played ++;
                 }
             };    
+        },
+        stop:function(id){
+             if(!Crafty.support.audio || !this.sounds[id]) return;
+             var s = this.sounds[id];
+             if(!s.obj.paused) s.obj.pause();
         },
         mute:function(){
             var s;

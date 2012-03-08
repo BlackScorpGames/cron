@@ -4,7 +4,7 @@
 //Loading Scene
 Crafty.scene("Loading",function(){
     var toLoad = [];
-    toLoad.push(game_path + "assets/img/loading.jpg", game_path + "assets/img/bg.png");
+    toLoad.push(game_path + "assets/img/loading.jpg", game_path + "assets/img/bg.png",game_path + "media/music/spaceship.ogg");
     for(var i in Crafty.assets){
         toLoad.push(i);
     }
@@ -46,8 +46,8 @@ Crafty.scene("Loading",function(){
             bar.progressbar({
                 value:~~e.percent
             });
-         //   console.log("Loaded: ");
-         // console.log(e.src);
+        //   console.log("Loaded: ");
+        // console.log(e.src);
         },
         function(e) {
             //uh oh, error loading
@@ -55,10 +55,15 @@ Crafty.scene("Loading",function(){
             console.log(e.src);
         }
         );
-
+    //Play background music and repeat will work only Safari /IE
+    Crafty.audio.play("spaceship",-1);
+     Crafty.audio.play("spaceship.ogg",-1); //Works with others
 });
 //Level 1 Scene
 Crafty.scene("Level1",function(){
+    //Stop loading sound
+    Crafty.audio.stop("spaceship");
+    Crafty.audio.stop("spaceship.ogg");
     //Display interface
     $('#interface').show();
     //Setup background of level

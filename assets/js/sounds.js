@@ -1,13 +1,5 @@
 
 Crafty.audio.add({
-    space: [
-    game_path + "media/music/through-space.mp3",
-    game_path + "media/music/through-space.ogg"
-    ],
-    spaceship: [
-    game_path + "media/music/spaceship.mp3",
-    game_path + "media/music/spaceship.ogg"
-    ],
     explosion0: [
     game_path + "media/sounds/explodemini.mp3",
     game_path + "media/sounds/explodemini.ogg"
@@ -33,11 +25,10 @@ Crafty.audio.add({
     game_path + "media/sounds/laser4.ogg"
     ]
 });
-/*
-Crafty.audio.add("space2", game_path + "media/music/through-space.mp3");
 
-Crafty.audio.add("space3",[
+Crafty.audio.add("space",[
     game_path + "media/music/through-space.mp3",
     game_path + "media/music/through-space.ogg"
     ]);
-Crafty.audio.add("space4");*/
+
+Crafty.audio.add("spaceship", game_path + "media/music/spaceship.mp3"); //Will work only Safari/IE

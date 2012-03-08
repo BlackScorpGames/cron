@@ -115,6 +115,7 @@ Crafty.extend({
                 } else if (obj.attachEvent)  {  
                     obj.attachEvent('oncanplaythrough', pro);  
                 }
+                obj.onload=pro;
                 obj.load();
             } else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") { 
                 if(!obj) {
