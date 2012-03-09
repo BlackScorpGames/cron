@@ -46,8 +46,8 @@ Crafty.scene("Loading",function(){
             bar.progressbar({
                 value:~~e.percent
             });
-        //   console.log("Loaded: ");
-        // console.log(e.src);
+         console.log("Loaded: ");
+         console.log(src);
         },
         function(e) {
             //uh oh, error loading
