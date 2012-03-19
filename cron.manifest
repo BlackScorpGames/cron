@@ -1,0 +1,30 @@
+{  
+  "version": "0.1",  
+  "name": "Cron",  
+  "description": "Small Space Shooter",  
+  "icons": {   
+    "48": "/assets/img/icons/icon-48.png",  
+    "128": "/assets/img/icons/icon-128.png"  
+  },  
+  "widget": {  
+    "path": "/widget.html",  
+    "width": 100,  
+    "height": 200  
+  },  
+  "developer": {  
+    "name": "Witali Mik",  
+    "url": "https://twitter.com/#!/xBlackScorpx"  
+  },  
+  "installs_allowed_from": [  
+    "https://appstore.mozillalabs.com"  
+  ],  
+  "locales": {  
+    "de": {  
+      "description": "Kleiner Schooter mit Raumschiffen",  
+      "developer": {  
+        "url": "https://twitter.com/#!/xBlackScorpx"  
+      }  
+    } 
+  },  
+  "default_locale": "en"  
+} 

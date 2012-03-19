@@ -55,11 +55,11 @@ Crafty.extend({
   
         //Progress function
         function pro(){
-            
-           
-            var src = this.currentSrc || this.src;
+            var src = this.src;
             if (this.removeEventListener) {  
                 this.removeEventListener('canplaythrough', pro, true);     
+            }else{
+                this.detachEvent('canplaythrough',pro);
             }
             this.onload=null;
             ++j;
@@ -110,8 +110,12 @@ Crafty.extend({
                 }
                 if (obj.addEventListener) {  
                     obj.addEventListener('canplaythrough', pro, true);     
+                }else if(obj.attachEvent){
+                    obj.attachEvent('oncanplaythrough',pro);
+                }else{
+                    obj.oncanplaythrough=pro;
                 }
-               
+                // 
             } else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") { 
                 if(!obj) {
                     obj = new Image();
