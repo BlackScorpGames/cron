@@ -41,7 +41,7 @@ Crafty.sprite(128,game_path + "assets/img/explosion.png",{
     explosion3:[0,2]
 });
 
-Crafty.sprite(30,34,game_path + "assets/img/powerups.png",{
+Crafty.sprite(34,30,game_path + "assets/img/powerups.png",{
     heal:[0,0],
     shield:[0,1],
     overheat:[0,2],

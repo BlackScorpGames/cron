@@ -1,7 +1,7 @@
 /**
  * This File describes all enemies
  */
-
+var powerUps = ["Heal","Shield"];
 //Basic enemy component
 Crafty.c("Enemy",{
     playerID:null, //ID of player which has something todo with that enemy
@@ -46,8 +46,7 @@ Crafty.c("Enemy",{
         })
         .bind("Die",function(){
             //Create a random explosion at his position
-            var exp = Crafty.e("RandomExplosion");
-            exp.attr({
+            Crafty.e("RandomExplosion").attr({
                 x:this.x-this.w,
                 y:this.y-this.h
             });
@@ -55,6 +54,13 @@ Crafty.c("Enemy",{
             Crafty(this.playerID).trigger("Killed",this.points);
             //Destroy the asteroid
             this.destroy();
+            if(Crafty.math.randomInt(0, 100) > 80){
+                var powerUp = powerUps[Crafty.math.randomInt(0, powerUps.length-1)];
+                Crafty.e(powerUp).attr({
+                    x:this.x,
+                    y:this.y
+                });
+            }
         });
     }
 });

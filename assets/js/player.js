@@ -129,6 +129,18 @@ Crafty.c("Player",{
             this.trigger("Hurt",bullet.dmg);
             bullet.destroy();
         })
+        .bind("RestoreHP",function(val){
+            if(this.hp.current < this.hp.max){
+                this.hp.current += val;
+                this.updateHp();  
+            }
+        })
+        .bind("RestoreShield",function(val){
+           if(this.shield.current < this.shield.max){
+                this.shield.current += val;
+                this.updateShield();  
+            }  
+        })
         .reset() /*Set initial points*/;
         return this;
     },
