@@ -198,11 +198,15 @@ Crafty.c("Player",{
             y:this.y
         });
         this.lives--;
+        this.updateLives();
         if(this.lives <= 0){
             this.destroy();
             this.infos.alert.show().text('Game Over!').effect('pulsate',500);
+            Crafty.audio.stop("space");
+             Crafty.audio.play("gameover",-1);
             gameHooks.endGame(this.score);
-            Crafty.pause();
+             
+           // Crafty.pause();
         }else{
             this.reset();
         }

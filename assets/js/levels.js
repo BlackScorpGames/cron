@@ -8,7 +8,6 @@ Crafty.scene("Loading",function(){
     for(var i in Crafty.assets){
         toLoad.push(i);
     }
-      
     //Setup background image
     Crafty.background("url("+game_path+"assets/img/loading.jpg) black");
     
@@ -41,6 +40,7 @@ Crafty.scene("Loading",function(){
         },
         function(e) {
             var src = e.src ||"";
+            if(src=="ambient.ogg") console.log("yep")
             //update progress
             text.text("Loading "+src.substr(src.lastIndexOf('/') + 1).toLowerCase()+" Loaded: "+~~e.percent+"%");
             bar.progressbar({
@@ -96,6 +96,7 @@ Crafty.scene("Level1",function(){
         Crafty.stage.elem.style.backgroundPosition ="0px "+frame.frame+"px";
         
     });
+   
     //Play background music and repeat
     Crafty.audio.play("space",-1);
   

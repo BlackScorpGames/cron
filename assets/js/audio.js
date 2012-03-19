@@ -66,6 +66,7 @@ Crafty.extend({
                     if(this.supported[ext]){
                         audio.src = url;
                         if (!Crafty.assets[url]) Crafty.assets[url] = audio;  
+                        
                     }
                   
                 }
@@ -98,7 +99,7 @@ Crafty.extend({
         play:function(id,repeat,volume){
             if(repeat == 0 || !Crafty.support.audio || !this.sounds[id]) return;
             var s = this.sounds[id];
-            s.obj.volume = Crafty.audio.volume || volume;   
+            s.obj.volume = volume || Crafty.audio.volume ;   
             if(s.obj.currentTime) s.obj.currentTime = 0;   
             s.obj.play(); 
             s.played ++;

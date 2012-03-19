@@ -12,7 +12,7 @@ Crafty.c("RandomExplosion",{
         });
         
 
-        Crafty.audio.play("explosion"+(rand %2));
+        Crafty.audio.play("explosion"+Crafty.math.randomInt(0,1),1,0.5);
     }
 });
 Crafty.c("Damage",{
