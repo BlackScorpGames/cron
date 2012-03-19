@@ -1,0 +1,21 @@
+CACHE MANIFEST
+# v1 - 2011-08-13
+# This is a comment.
+index.html
+media/music/spaceship.ogg
+media/music/through-space.ogg
+media/sounds/explode.ogg
+media/sounds/explodemini.ogg
+media/sounds/laser1.ogg
+media/sounds/laser2.ogg
+media/sounds/laser3.ogg
+media/sounds/laser4.ogg
+assets/img/bg.png
+assets/img/loading.jpg
+assets/img/dmg.png
+assets/img/bars.png
+assets/img/ships.png
+assets/img/weapon1_small.png
+assets/img/explosion.png
+assets/img/asteroid32.png
+assets/img/asteroid64.png

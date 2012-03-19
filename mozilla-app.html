@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html manifest="cron.appcache">
+    <head>
+        <title>Install Cron</title>
+    </head>
+    <body>
+        <script type="text/javascript">
+        
+            //expands on the previous example code  
+  
+            function installCallback(result) {  
+              document.write('See your <a href="https://myapps.mozillalabs.com/">Apps</a>');
+              //  window.location.href="https://myapps.mozillalabs.com/";
+                // great - display a message, or redirect to a launch page  
+    
+            }  
+  
+            function errorCallback(result) {  
+              alert(result.message);
+                // whoops - result.code and result.message have details  
+            }  
+  
+            function installCheck(data) {  
+                if (data) {  
+                    // yes, we're installed  
+                    // data.manifest has the manifest  
+                    // data.install_time is when it was installed  
+                    // data.install_origin is the domain that called install  
+                    // data.install_data has the optional data from install  
+                   
+                     window.location.href="https://myapps.mozillalabs.com/";
+                } else {  
+                    // not installed!  
+                    navigator.mozApps.install(  
+                    "http://cron.cruel-online.de/cron.webapp",  
+                    {},  
+                    installCallback,  
+                    errorCallback  
+                );  
+                }  
+            } 
+
+      
+            navigator.mozApps.amInstalled(installCheck);  
+        </script>
+    </body>
+</html>
