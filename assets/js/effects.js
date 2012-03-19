@@ -1,13 +1,16 @@
 Crafty.c("RandomExplosion",{
     init:function(){
-        var rand = Crafty.math.randomInt(1,4);
+        var rand = Crafty.math.randomInt(1,3);
         this.addComponent("2D","Canvas","explosion"+rand,"SpriteAnimation")
-        .animate("explode1",0,0,4)
-        .animate("explode2",0,1,4)
-        .animate("explode3",0,2,4)
-        .animate("explode4",0,3,4)
-        .animate("explode"+rand,10)
-        .delay(function(){this.destroy()},500);
+        .animate("explode1",0,0,16)
+        .animate("explode2",0,1,16)
+        .animate("explode3",0,2,16)
+        
+        .animate("explode"+rand,10,0)
+        .bind("AnimationEnd",function(){
+            this.destroy();
+        });
+        
 
         Crafty.audio.play("explosion"+(rand %2));
     }
@@ -18,4 +21,19 @@ Crafty.c("Damage",{
         .delay(function(){this.destroy()},100);
         
     }
+});
+Crafty.c("Flicker",{
+   init:function(){
+       this.bind("EnterFrame",function(frame){
+           if(frame.frame % 5 == 0 && this.has("Flicker")){
+               if(this.alpha == 0.5){
+                   this.alpha = 1.0;
+               }else{
+                   this.alpha = 0.5;
+               }
+           }
+       }).bind("RemoveComponent",function(){
+            this.alpha = 1.0;
+       });
+   } 
 });

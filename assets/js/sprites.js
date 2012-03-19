@@ -35,9 +35,15 @@ Crafty.sprite(64,game_path + "assets/img/asteroid64.png",{
 Crafty.sprite(32,game_path + "assets/img/asteroid32.png",{
     asteroid32:[0,0]
 });
-Crafty.sprite(65,game_path + "assets/img/explosion.png",{
+Crafty.sprite(128,game_path + "assets/img/explosion.png",{
     explosion1:[0,0],
     explosion2:[0,1],
-    explosion3:[0,2],
-    explosion4:[0,3]
+    explosion3:[0,2]
+});
+
+Crafty.sprite(30,34,game_path + "assets/img/powerups.png",{
+    heal:[0,0],
+    shield:[0,1],
+    overheat:[0,2],
+    invincible:[0,3]
 });

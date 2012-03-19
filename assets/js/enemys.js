@@ -10,10 +10,10 @@ Crafty.c("Enemy",{
         this.requires("2D,Canvas,Collision")  
         //Destroy all enemies if they leave the viewport
         .bind("EnterFrame",function(){
-            if(this.x > Crafty.viewport.width+this.w ||
+            if(this.x > Crafty.viewport.width + this.w ||
                 this.x < -this.w || 
                 this.y < -this.h || 
-                this.y > Crafty.viewport.height+this.h){
+                this.y > Crafty.viewport.height +this.h){
                 this.destroy();
             }
         })
@@ -21,29 +21,41 @@ Crafty.c("Enemy",{
         .onHit("PlayerBullet",function(ent){
             var bullet = ent[0].obj;
             this.playerID = bullet.playerID; //Which player hurted you
-            this.hurt(bullet.dmg); //Hurt the enemy with bullet damage
+            this.trigger("Hurt",bullet.dmg); //Hurt the enemy with bullet damage
             bullet.destroy(); //Destroy the bullet
         })
         //Describe behavior on getting hitted by Player
         .onHit("Player",function(ent){
             var player = ent[0].obj;
             //Hurt the player with my hp
-            Crafty(player[0]).hurt(this.hp);
+            Crafty(player[0]).trigger("Hurt",this.hp);
             //Hurt enemy with all hp he has
-            this.hurt(this.hp);
+            this.trigger("Hurt",this.hp);
+        })
+        //Event triggered when enemy was hurt
+        .bind("Hurt",function(dmg){
+            //Create a damage effect
+            Crafty.e("Damage").attr({
+                x:this.x,
+                y:this.y
+            });
+            //Reduce HP
+            this.hp -= dmg;
+            //Die if hp is 0
+            if(this.hp <= 0) this.trigger("Die");
+        })
+        .bind("Die",function(){
+            //Create a random explosion at his position
+            var exp = Crafty.e("RandomExplosion");
+            exp.attr({
+                x:this.x-this.w,
+                y:this.y-this.h
+            });
+            //Trigger the player event to calculate points
+            Crafty(this.playerID).trigger("Killed",this.points);
+            //Destroy the asteroid
+            this.destroy();
         });
-    },
-    //Function to hurt the enemy
-    hurt:function(dmg){
-        //Create a damage effect
-        Crafty.e("Damage").attr({
-            x:this.x,
-            y:this.y
-        });
-        //Reduce HP
-        this.hp -= dmg;
-        //Die if hp is 0
-        if(this.hp <= 0) this.die();
     }
 });
 
@@ -72,26 +84,26 @@ Crafty.c("Asteroid",{
             y:-this.h, //display asteroid over the viewport at start
             x:Crafty.math.randomInt(this.w,Crafty.viewport.width - this.w),//random position within the viewport
             rotation:Crafty.math.randomInt(0,360) //rotate it random
-        });
-    },
-    //Function to die
-    die:function(){
-       //Create a random explosion at his position
-        Crafty.e("RandomExplosion").attr({
-            x:this.x,
-            y:this.y
-        });
-        //Create 1-4 Small asteroids
-        for(var i = 0;i<Crafty.math.randomInt(1,4);i++){
-            Crafty.e("SmallAsteroid").attr({
+        })
+        .onHit("SmallAsteroid",function(){
+            this.trigger("Die");
+        })
+        //Event to die
+        .bind("Die",function(){
+            //Create a random explosion at his position
+            Crafty.e("RandomExplosion").attr({
                 x:this.x,
                 y:this.y
             });
-        }
-        //Trigger the player event to calculate points
-        Crafty(this.playerID).trigger("Killed",this.points);
-        //Destroy the asteroid
-        this.destroy();
+            //Create 1-4 Small asteroids
+            for(var i = 0;i<Crafty.math.randomInt(1,4);i++){
+                Crafty.e("SmallAsteroid").attr({
+                    x:this.x,
+                    y:this.y
+                });
+            }
+         
+        });
     }
 });
 
@@ -113,15 +125,7 @@ Crafty.c("SmallAsteroid",{
         .attr({
             rotation:Crafty.math.randomInt(0,360)
         });
-    },
-    
-    die:function(){
-        Crafty.e("RandomExplosion").attr({
-            x:this.x,
-            y:this.y
-        });
-        Crafty(this.playerID).trigger("Killed",this.points);
-        this.destroy();
+       
     }
 });
 
@@ -154,16 +158,9 @@ Crafty.c("Kamikaze",{
                 attacking = true;
             
             if(attacking)
-                this.y += 6;
+                this.y += 4;
         });
-    },
-    die:function(){
-        Crafty.e("RandomExplosion").attr({
-            x:this.x,
-            y:this.y
-        });
-        Crafty(this.playerID).trigger("Killed",this.points);
-        this.destroy();
+
     }
 });
 
@@ -185,28 +182,20 @@ Crafty.c("Level1",{
             x = Math.abs((this.x+this._w/2)-player.x);
         
             if((x<40)&& this._y < player.y && frame.frame % 20 == 0){
-                this.shoot();
+                this.trigger("Shoot");
             }
-            this.y += 2;
+            this.y += 1.5;
+        })
+        .bind("Shoot",function(){
+            var bullet = Crafty.e("Weapon1","EnemyBullet");
+            bullet.attr({
+                x: this._x+this._w/2-bullet.w/2,
+                y: this._y+this._h-bullet.h/2,
+                rotation: this._rotation,
+                xspeed: 5 * Math.sin(this._rotation / (180 / Math.PI)),
+                yspeed: 5 * Math.cos(this._rotation / (180 / Math.PI))
+            });   
         });
-    },
-    die:function(){
-        Crafty.e("RandomExplosion").attr({
-            x:this.x,
-            y:this.y
-        });
-        Crafty(this.playerID).trigger("Killed",this.points);
-        this.destroy();
-    },
-    shoot:function(){
-        var bullet = Crafty.e("Weapon1","EnemyBullet");
-        bullet.attr({
-            x: this._x+this._w/2-bullet.w/2,
-            y: this._y+this._h-bullet.h/2,
-            rotation: this._rotation,
-            xspeed: 20 * Math.sin(this._rotation / (180 / Math.PI)),
-            yspeed: 20 * Math.cos(this._rotation / (180 / Math.PI))
-        });  
     }
 });
 Crafty.c("Level2",{
@@ -232,27 +221,19 @@ Crafty.c("Level2",{
              
         
             if((x<40)&& this._y < player.y && frame.frame % 20 == 0){
-                this.shoot();
+                this.trigger("Shoot");
             }
-            this.y += 2;
+            this.y += 1.5;
+        })
+        .bind("Shoot",function(){
+            var bullet = Crafty.e("Weapon1","EnemyBullet");
+            bullet.attr({
+                x: this._x+this._w/2-bullet.w/2,
+                y: this._y+this._h-bullet.h/2,
+                rotation: this._rotation,
+                xspeed: 5 * Math.sin(this._rotation / (180 / Math.PI)),
+                yspeed: 5 * Math.cos(this._rotation / (180 / Math.PI))
+            });  
         });
-    },
-    die:function(){
-        Crafty.e("RandomExplosion").attr({
-            x:this.x,
-            y:this.y
-        });
-        Crafty(this.playerID).trigger("Killed",this.points);
-        this.destroy();
-    },
-    shoot:function(){
-        var bullet = Crafty.e("Weapon1","EnemyBullet");
-        bullet.attr({
-            x: this._x+this._w/2-bullet.w/2,
-            y: this._y+this._h-bullet.h/2,
-            rotation: this._rotation,
-            xspeed: 20 * Math.sin(this._rotation / (180 / Math.PI)),
-            yspeed: 20 * Math.cos(this._rotation / (180 / Math.PI))
-        });  
     }
 });

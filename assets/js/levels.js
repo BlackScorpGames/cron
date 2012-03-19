@@ -46,18 +46,16 @@ Crafty.scene("Loading",function(){
             bar.progressbar({
                 value:~~e.percent
             });
-         console.log("Loaded: ");
-         console.log(src);
+      
         },
         function(e) {
-            //uh oh, error loading
-            console.log("Error on loading: ");
-            console.log(e.src);
+        //uh oh, error loading
+          
         }
         );
     //Play background music and repeat will work only Safari /IE
     Crafty.audio.play("spaceship",-1);
-     Crafty.audio.play("spaceship.ogg",-1); //Works with others
+    Crafty.audio.play("spaceship.ogg",-1); //Works with others
 });
 //Level 1 Scene
 Crafty.scene("Level1",function(){
@@ -74,7 +72,7 @@ Crafty.scene("Level1",function(){
     var spotEnemys = function(frame){   
         //Spot each 50th Fram one Asteroid
  
-        if(frame % 50 == 0 && Crafty("Asteroid").length < 1 && Crafty("SmallAsteroid").length < 1){
+        if(frame % 50 == 0 && Crafty("Asteroid").length < 4 && Crafty("SmallAsteroid").length < 10){
             Crafty.e("Asteroid"); 
         }
         
@@ -82,7 +80,7 @@ Crafty.scene("Level1",function(){
             Crafty.e("Kamikaze");   
         }
         if(frame % 80 == 0  && Crafty("Level1").length < 1){
-            Crafty.e("Level1");
+            Crafty.e("Rookie");
         }
         if(frame % 90 == 0  && Crafty("Level2").length < 1){
             Crafty.e("Level2");

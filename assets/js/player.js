@@ -1,4 +1,4 @@
- Crafty.c("Player",{
+Crafty.c("Player",{
     hp:{
         current:10,
         max:10,
@@ -26,6 +26,7 @@
     ship:"ship1",
     bars:{},
     infos:{},
+    preparing:true,
     init:function(){
         this.bars = {
             hp:$('#hp'),
@@ -81,8 +82,8 @@
                 if(keyDown && !this.weapon.overheated){
                     this.shoot();
                 }else{
-                   if(this.heat.current > 0) //Cooldown the weapon
-                    this.heat.current = ~~(this.heat.current*29/30); 
+                    if(this.heat.current > 0) //Cooldown the weapon
+                        this.heat.current = ~~(this.heat.current*29/30); 
                 }
 
                 this.updateHeat();
@@ -92,16 +93,40 @@
                     this.infos.alert.hide();
                 }
                     
-          }
+            }
+            if(this.preparing){
+                this.y-=1;
+                if(this.y < Crafty.viewport.height-this.h-100){
+                    this.preparing = false;
+                    this.removeComponent("Flicker");
+                  
+                }
+            }
             
         })
         .bind("Killed",function(points){
             this.score += points;
             this.updateScore();
         })
+        .bind("Hurt",function(dmg){
+            if(this.has("Flicker")) return;
+            Crafty.e("Damage").attr({
+                x:this.x,
+                y:this.y
+            });
+            if(this.shield.current <= 0){
+                this.shield.current = 0;
+                this.hp.current -= dmg;
+            }else{
+                this.shield.current -= dmg;
+            } 
+            this.updateShield();
+            this.updateHp();
+            if(this.hp.current <= 0) this.die();
+        })
         .onHit("EnemyBullet",function(ent){
             var bullet = ent[0].obj;
-            this.hurt(bullet.dmg);
+            this.trigger("Hurt",bullet.dmg);
             bullet.destroy();
         })
         .reset() /*Set initial points*/;
@@ -130,7 +155,10 @@
         this.updateScore();
         //Init position
         this.x = Crafty.viewport.width/2-this.w/2;
-        this.y = Crafty.viewport.height-this.h-100;
+        this.y = Crafty.viewport.height-this.h;
+        
+        this.addComponent("Flicker");
+        this.preparing = true;
     },
     shoot:function(){ 
         var bullet = Crafty.e(this.weapon.name,"PlayerBullet");
@@ -151,21 +179,6 @@
             this.weapon.overheated = true;
         }
            
-    },
-    hurt:function(dmg){
-        Crafty.e("Damage").attr({
-            x:this.x,
-            y:this.y
-        });
-        if(this.shield.current <= 0){
-            this.shield.current = 0;
-            this.hp.current -= dmg;
-        }else{
-            this.shield.current -= dmg;
-        } 
-        this.updateShield();
-        this.updateHp();
-        if(this.hp.current <= 0) this.die();
     },
     die:function(){
         Crafty.e("RandomExplosion").attr({
