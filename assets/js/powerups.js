@@ -10,7 +10,7 @@ Crafty.c("PowerUp",{
             this.destroy(); 
         })
         .bind("EnterFrame",function(){
-            this.y+=1;
+            this.y+=2;
         });
     }
 });

@@ -47,7 +47,7 @@ Crafty.c("Player",{
         
         var keyDown = false; //Player didnt pressed a key
         this
-        .addComponent("2D","Canvas",this.ship,"Multiway","Keyboard","Collision") /*Add needed Components*/
+        .requires("2D,Canvas,"+this.ship+",Multiway,Keyboard,Collision,Flicker") /*Add needed Components*/
         .multiway(this.movementSpeed, { /*Enable Movement Control*/
             UP_ARROW: -90, 
             DOWN_ARROW: 90, 
@@ -59,12 +59,13 @@ Crafty.c("Player",{
             if(this.x+this.w > Crafty.viewport.width ||
                 this.x+this.w < this.w || 
                 this.y+this.h-35 < this.h || 
-                this.y+this.h+35 > Crafty.viewport.height){
+                this.y+this.h+35 > Crafty.viewport.height || this.preparing){
                 this.attr({
                     x:from.x, 
                     y:from.y
                 });
             }
+          
         })
         .bind("KeyDown", function(e) {
             if(e.keyCode === Crafty.keys.SPACE){
@@ -95,10 +96,10 @@ Crafty.c("Player",{
                     
             }
             if(this.preparing){
-                this.y-=1;
-                if(this.y < Crafty.viewport.height-this.h-100){
+                this.y--;
+                if(this.y < Crafty.viewport.height-this.h-Crafty.viewport.height/4){
                     this.preparing = false;
-                    this.removeComponent("Flicker");
+                    this.flicker=false;
                   
                 }
             }
@@ -109,7 +110,7 @@ Crafty.c("Player",{
             this.updateScore();
         })
         .bind("Hurt",function(dmg){
-            if(this.has("Flicker")) return;
+            if(this.flicker) return;
             Crafty.e("Damage").attr({
                 x:this.x,
                 y:this.y
@@ -136,7 +137,7 @@ Crafty.c("Player",{
             }
         })
         .bind("RestoreShield",function(val){
-           if(this.shield.current < this.shield.max){
+            if(this.shield.current < this.shield.max){
                 this.shield.current += val;
                 this.updateShield();  
             }  
@@ -167,12 +168,13 @@ Crafty.c("Player",{
         this.updateScore();
         //Init position
         this.x = Crafty.viewport.width/2-this.w/2;
-        this.y = Crafty.viewport.height-this.h;
+        this.y = Crafty.viewport.height-this.h-36;
         
-        this.addComponent("Flicker");
+        this.flicker = true;
         this.preparing = true;
     },
     shoot:function(){ 
+        if(this.preparing) return;
         var bullet = Crafty.e(this.weapon.name,"PlayerBullet");
         bullet.attr({
             playerID:this[0],
@@ -203,11 +205,12 @@ Crafty.c("Player",{
             this.destroy();
             this.infos.alert.show().text('Game Over!').effect('pulsate',500);
             Crafty.audio.stop("space");
-             Crafty.audio.play("gameover",-1);
+            Crafty.audio.play("gameover",-1);
             gameHooks.endGame(this.score);
              
-           // Crafty.pause();
+        // Crafty.pause();
         }else{
+          
             this.reset();
         }
         

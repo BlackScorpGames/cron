@@ -54,7 +54,7 @@ Crafty.c("Enemy",{
             Crafty(this.playerID).trigger("Killed",this.points);
             //Destroy the asteroid
             this.destroy();
-            if(Crafty.math.randomInt(0, 100) > 80){
+            if(Crafty.math.randomInt(0, 100) > 70){
                 var powerUp = powerUps[Crafty.math.randomInt(0, powerUps.length-1)];
                 Crafty.e(powerUp).attr({
                     x:this.x,

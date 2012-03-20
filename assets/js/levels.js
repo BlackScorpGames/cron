@@ -72,7 +72,7 @@ Crafty.scene("Level1",function(){
     var spotEnemys = function(frame){   
         //Spot each 50th Fram one Asteroid
  
-        if(frame % 50 == 0 && Crafty("Asteroid").length < 4 && Crafty("SmallAsteroid").length < 10){
+        if(frame % 50 == 0 && Crafty("Asteroid").length < 2 && Crafty("SmallAsteroid").length < 8){
             Crafty.e("Asteroid"); 
         }
         

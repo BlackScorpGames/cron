@@ -112,9 +112,9 @@ Crafty.extend({
             };    
         },
         stop:function(id){
-             if(!Crafty.support.audio || !this.sounds[id]) return;
-             var s = this.sounds[id];
-             if(!s.obj.paused) s.obj.pause();
+            if(!Crafty.support.audio || !this.sounds[id]) return;
+            var s = this.sounds[id];
+            if(!s.obj.paused) s.obj.pause();
         },
         mute:function(){
             var s;

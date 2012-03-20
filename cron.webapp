@@ -16,7 +16,7 @@
     "url": "https://twitter.com/#!/xBlackScorpx"  
   },  
   "installs_allowed_from": [  
-    "http://cron.cruel-online.de"  ,"http://blackscorp.github.com/cron/","https://marketplace.mozilla.org/"
+    "http://cron.cruel-online.de"  ,"https://marketplace.mozilla.org/"
   ],  
   "locales": {  
     "de": {  
