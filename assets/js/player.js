@@ -27,6 +27,7 @@ Crafty.c("Player",{
     bars:{},
     infos:{},
     preparing:true,
+    bounce:false,
     init:function(){
         this.bars = {
             hp:$('#hp'),
@@ -41,6 +42,7 @@ Crafty.c("Player",{
             shield:this.bars.shield.find('.text'),
             alert:$('.alert')
         }
+        var stage = $('#cr-stage');
         this.bars.hp.addClass('green');
         this.bars.shield.addClass('green');
         this.bars.heat.addClass('green');
@@ -103,6 +105,7 @@ Crafty.c("Player",{
                   
                 }
             }
+         
             
         })
         .bind("Killed",function(points){
@@ -111,6 +114,17 @@ Crafty.c("Player",{
         })
         .bind("Hurt",function(dmg){
             if(this.flicker) return;
+            if(this.bounce == false) {
+                this.bounce = true;
+                var t = this;
+                stage.effect('bounce',{},100,function(){
+                    $(this).css({
+                        'left':'50%',
+                        'marginLeft':'-300px'
+                    });
+                t.bounce = false;
+                });
+            }
             Crafty.e("Damage").attr({
                 x:this.x,
                 y:this.y
@@ -204,11 +218,9 @@ Crafty.c("Player",{
         if(this.lives <= 0){
             this.destroy();
             this.infos.alert.show().text('Game Over!').effect('pulsate',500);
-            Crafty.audio.stop("space");
-            Crafty.audio.play("gameover",-1);
             gameHooks.endGame(this.score);
              
-        // Crafty.pause();
+            Crafty.pause();
         }else{
           
             this.reset();

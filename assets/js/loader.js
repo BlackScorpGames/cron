@@ -113,7 +113,7 @@ Crafty.extend({
                 }else if(obj.attachEvent){
                     obj.attachEvent('oncanplaythrough',pro);
                 }else{
-                    obj.oncanplaythrough=pro;
+                    //obj.oncanplaythrough=pro;
                 }
                 // 
             } else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") { 
