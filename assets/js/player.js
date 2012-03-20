@@ -117,11 +117,7 @@ Crafty.c("Player",{
             if(this.bounce == false) {
                 this.bounce = true;
                 var t = this;
-                stage.effect('bounce',{},100,function(){
-                    $(this).css({
-                        'left':'50%',
-                        'marginLeft':'-300px'
-                    });
+                stage.effect('highlight',{color:'#990000'},100,function(){
                 t.bounce = false;
                 });
             }

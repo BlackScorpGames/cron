@@ -40,7 +40,7 @@ Crafty.scene("Loading",function(){
         },
         function(e) {
             var src = e.src ||"";
-            if(src=="ambient.ogg") console.log("yep")
+          
             //update progress
             text.text("Loading "+src.substr(src.lastIndexOf('/') + 1).toLowerCase()+" Loaded: "+~~e.percent+"%");
             bar.progressbar({
