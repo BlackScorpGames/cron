@@ -25,7 +25,7 @@ Crafty.extend({
         },
         audioElement:function(){
             //IE does not support Audio Object
-            return typeof Audio !== 'undefined' ? new Audio() : document.createElement('audio');
+            return typeof Audio !== 'undefined' ? new Audio("") : document.createElement('audio');
         },
         add:function(id,url){
             Crafty.support.audio = !!this.audioElement().canPlayType; //Setup audio support
@@ -66,7 +66,11 @@ Crafty.extend({
                     if(this.supported[ext]){
                         audio.src = url;
                         if (!Crafty.assets[url]) Crafty.assets[url] = audio;  
-                        
+                        this.sounds[id] = {
+                            obj:audio,
+                            played:0
+                        } 
+                       
                     }
                   
                 }
@@ -112,11 +116,20 @@ Crafty.extend({
             };    
         },
         stop:function(id){
-            if(!Crafty.support.audio || !this.sounds[id]) return;
-            var s = this.sounds[id];
+            if(!Crafty.support.audio) return;
+            var s;
+            if(!id){
+                for(var i in this.sounds){
+                    s = this.sounds[i];
+                    if(!s.obj.paused) s.obj.pause();
+                }
+            }
+            if(!this.sounds[id]) return;    
+            s = this.sounds[id];
             if(!s.obj.paused) s.obj.pause();
         },
         mute:function(){
+            if(!Crafty.support.audio) return;
             var s;
             if(!this.muted){
                 for(var i in this.sounds){

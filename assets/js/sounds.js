@@ -31,5 +31,5 @@ Crafty.audio.add("space",[
     game_path + "media/music/through-space.ogg"
     ]);
 
-
+Crafty.audio.add("gameover",game_path + "media/music/ambient.ogg");
 Crafty.audio.add("spaceship", game_path + "media/music/spaceship.mp3"); //Will work only Safari/IE

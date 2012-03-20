@@ -29,27 +29,10 @@ Crafty.c("Player",{
     preparing:true,
     bounce:false,
     init:function(){
-        this.bars = {
-            hp:$('#hp'),
-            heat:$('#heat'),
-            shield:$('#shield')
-        };
-        this.infos = {
-            lives :$('.lives'),
-            score: $('.score'),
-            hp:this.bars.hp.find('.text'),
-            heat:this.bars.heat.find('.text'),
-            shield:this.bars.shield.find('.text'),
-            alert:$('.alert')
-        }
+     
         var stage = $('#cr-stage');
-        this.bars.hp.addClass('green');
-        this.bars.shield.addClass('green');
-        this.bars.heat.addClass('green');
-        
         var keyDown = false; //Player didnt pressed a key
-        this
-        .requires("2D,Canvas,"+this.ship+",Multiway,Keyboard,Collision,Flicker") /*Add needed Components*/
+        this.requires("2D,Canvas,"+this.ship+",Multiway,Keyboard,Collision,Flicker") /*Add needed Components*/
         .multiway(this.movementSpeed, { /*Enable Movement Control*/
             UP_ARROW: -90, 
             DOWN_ARROW: 90, 
@@ -89,11 +72,11 @@ Crafty.c("Player",{
                         this.heat.current = ~~(this.heat.current*29/30); 
                 }
 
-                this.updateHeat();
+                Crafty.trigger("UpdateStats");
                 
                 if(this.weapon.overheated && this.heat.percent < 85){
                     this.weapon.overheated = false;
-                    this.infos.alert.hide();
+                    Crafty.trigger("HideText");
                 }
                     
             }
@@ -110,15 +93,17 @@ Crafty.c("Player",{
         })
         .bind("Killed",function(points){
             this.score += points;
-            this.updateScore();
+            Crafty.trigger("UpdateStats");
         })
         .bind("Hurt",function(dmg){
             if(this.flicker) return;
             if(this.bounce == false) {
                 this.bounce = true;
                 var t = this;
-                stage.effect('highlight',{color:'#990000'},100,function(){
-                t.bounce = false;
+                stage.effect('highlight',{
+                    color:'#990000'
+                },100,function(){
+                    t.bounce = false;
                 });
             }
             Crafty.e("Damage").attr({
@@ -131,8 +116,7 @@ Crafty.c("Player",{
             }else{
                 this.shield.current -= dmg;
             } 
-            this.updateShield();
-            this.updateHp();
+            Crafty.trigger("UpdateStats");
             if(this.hp.current <= 0) this.die();
         })
         .onHit("EnemyBullet",function(ent){
@@ -143,14 +127,16 @@ Crafty.c("Player",{
         .bind("RestoreHP",function(val){
             if(this.hp.current < this.hp.max){
                 this.hp.current += val;
-                this.updateHp();  
+                Crafty.trigger("UpdateStats");
             }
+        
         })
         .bind("RestoreShield",function(val){
             if(this.shield.current < this.shield.max){
                 this.shield.current += val;
-                this.updateShield();  
+                Crafty.trigger("UpdateStats");
             }  
+        
         })
         .reset() /*Set initial points*/;
         return this;
@@ -171,11 +157,7 @@ Crafty.c("Player",{
             max:100,
             percent:0
         }
-        this.updateHp();
-        this.updateShield();
-        this.updateHeat();
-        this.updateLives();
-        this.updateScore();
+        Crafty.trigger("UpdateStats");
         //Init position
         this.x = Crafty.viewport.width/2-this.w/2;
         this.y = Crafty.viewport.height-this.h-36;
@@ -185,6 +167,7 @@ Crafty.c("Player",{
     },
     shoot:function(){ 
         if(this.preparing) return;
+        
         var bullet = Crafty.e(this.weapon.name,"PlayerBullet");
         bullet.attr({
             playerID:this[0],
@@ -199,7 +182,7 @@ Crafty.c("Player",{
             this.heat.current ++;
          
         if(this.heat.current >= this.heat.max){
-            this.infos.alert.text('Weapon Overheated!').show().effect('pulsate',500);
+            Crafty.trigger("ShowText","Weapon Overheated!");
             this.weapon.overheated = true;
         }
            
@@ -210,51 +193,15 @@ Crafty.c("Player",{
             y:this.y
         });
         this.lives--;
-        this.updateLives();
+        Crafty.trigger("UpdateStats");
         if(this.lives <= 0){
             this.destroy();
-            this.infos.alert.show().text('Game Over!').effect('pulsate',500);
-            gameHooks.endGame(this.score);
-             
-            Crafty.pause();
+            Crafty.trigger("GameOver",this.score);
         }else{
-          
             this.reset();
         }
         
         
-    },
-    updateHeat:function(){
-    
-        this.heat.percent = Math.round(this.heat.current/this.heat.max * 100);
-        this.infos.heat.text('Heat: '+this.heat.current+ '/'+this.heat.max);
-        this.bars.heat.progressbar({
-            value:this.heat.percent
-        });
-    },
-    updateHp:function(){
-        this.hp.percent = Math.round(this.hp.current/this.hp.max * 100);
-        this.infos.hp.text('HP: '+this.hp.current+ '/'+this.hp.max);
-        this.bars.hp.progressbar({
-            value:this.hp.percent
-        });
-    },
-    updateShield:function(){
-        this.shield.percent = Math.round(this.shield.current/this.shield.max * 100);
-        this.infos.shield.text('Shield: '+this.shield.current+ '/'+this.shield.max);
-        this.bars.shield.progressbar({
-            value:this.shield.percent
-        });
-    },
-    updateScore:function(){
-        this.infos.score.text("Score: "+this.score);
-    },
-    updateLives:function(){
-        this.infos.lives.text("Lives: "+this.lives);
     }
     
 });
-
-var gameHooks = {
-    endGame: function (score) {}
-}

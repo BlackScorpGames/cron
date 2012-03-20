@@ -1,6 +1,9 @@
+//Enable Console log in opera
+if(window.opera){ console = {log:window.opera.postError} }
 /**
  * This is the Main JS File
  */
+
 $(function(){
 
     //Init Crafty
@@ -13,3 +16,4 @@ $(function(){
     //play the loading scene
     Crafty.scene("Loading");
 });
+

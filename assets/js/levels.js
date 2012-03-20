@@ -4,7 +4,7 @@
 //Loading Scene
 Crafty.scene("Loading",function(){
     var toLoad = [];
-    toLoad.push(game_path + "assets/img/loading.jpg", game_path + "assets/img/bg.png",game_path + "media/music/spaceship.ogg");
+    toLoad.push(game_path + "assets/img/loading.jpg", game_path + "assets/img/bg.png");
     for(var i in Crafty.assets){
         toLoad.push(i);
     }
@@ -50,25 +50,48 @@ Crafty.scene("Loading",function(){
         },
         function(e) {
         //uh oh, error loading
-          
+         
         }
         );
-    //Play background music and repeat will work only Safari /IE
-    Crafty.audio.play("spaceship",-1);
-    Crafty.audio.play("spaceship.ogg",-1); //Works with others
+   Crafty.audio.play("gameover",-1);
+},
+//Uninit Scene
+function(){
+    Crafty.audio.stop();
 });
 //Level 1 Scene
 Crafty.scene("Level1",function(){
     //Stop loading sound
-    Crafty.audio.stop("spaceship");
-    Crafty.audio.stop("spaceship.ogg");
+    Crafty.audio.stop();
     //Display interface
     $('#interface').show();
     //Setup background of level
     Crafty.background("url(" + game_path + "/assets/img/bg.png)");
-   
+    
     $('.level').text('Level: 1');
 
+    //Get the Interface elements
+    var bars = {
+        hp:$('#hp'),
+        heat:$('#heat'),
+        shield:$('#shield')
+    };
+    bars.hp.addClass('green');
+    bars.shield.addClass('green');
+    bars.heat.addClass('green');
+    
+    var infos = {
+        lives :$('.lives'),
+        score: $('.score'),
+        hp:bars.hp.find('.text'),
+        heat:bars.heat.find('.text'),
+        shield:bars.shield.find('.text'),
+        alert:$('.alert')
+    }
+
+   
+        
+        
     var spotEnemys = function(frame){   
         //Spot each 50th Fram one Asteroid
  
@@ -87,16 +110,56 @@ Crafty.scene("Level1",function(){
         }
     };
     //Create the player
-    Crafty.e("Player");
-    //Bin Gameloop to the Scene
-    this.bind("EnterFrame",function(frame){
+    var player = Crafty.e("Player");
+    //Bind Gameloop to the Scene
+    Crafty.bind("EnterFrame",function(frame){
         //Trigger Event to display enemies
         spotEnemys(frame.frame);
         //Setup Background position
         Crafty.stage.elem.style.backgroundPosition ="0px "+frame.frame+"px";
         
     });
-   
+    
+    //Bind UpdateStats Event
+    Crafty.bind("UpdateStats",function(){
+        //calculate percents
+        player.heat.percent = Math.round(player.heat.current/player.heat.max * 100);
+        player.hp.percent = Math.round(player.hp.current/player.hp.max * 100);
+        player.shield.percent = Math.round(player.shield.current/player.shield.max * 100);
+       
+        //display the values
+        infos.heat.text('Heat: '+player.heat.current+ '/'+player.heat.max);
+        infos.hp.text('HP: '+player.hp.current+ '/'+player.hp.max);
+        infos.shield.text('Shield: '+player.shield.current+ '/'+player.shield.max);
+        infos.score.text("Score: "+player.score);
+        infos.lives.text("Lives: "+player.lives);
+        
+        //Update progressbars
+        bars.heat.progressbar({
+            value:player.heat.percent
+        });
+        bars.hp.progressbar({
+            value:player.hp.percent
+        });
+        bars.shield.progressbar({
+            value:player.shield.percent
+        });
+
+    });
+    //Bind global Event Show Text
+    Crafty.bind("ShowText",function(text){
+        infos.alert.text(text).show().effect('pulsate',500)
+    });
+    Crafty.bind("HideText",function(){
+        infos.alert.text("").hide(); 
+    });
+    //Global Event for Game Over
+    Crafty.bind("GameOver",function(score){
+            Crafty.trigger("ShowText","Game Over!");
+            Crafty.audio.stop();
+            Crafty.audio.play("gameover",-1);
+            
+    });
     //Play background music and repeat
     Crafty.audio.play("space",-1);
   
