@@ -13,8 +13,13 @@
 .clear{
     clear:both;
 }
+.skip{
+    color:#990000;
+    text-decoration: underline;
+    cursor:pointer;
+}
 #interface,#loading{
-    display:none;
+  
     position: absolute;
     width: 100%;
     height: 100%;

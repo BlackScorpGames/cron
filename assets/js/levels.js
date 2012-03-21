@@ -12,31 +12,38 @@ Crafty.scene("Loading",function(){
     Crafty.background("url("+game_path+"assets/img/loading.jpg) black");
     
     //Select DOM elements
-    var loading = $('#loading');
     var bar = $('#load');
     var button = $('.button');
     var text = bar.find('.text');
     
-    //Display loading interface
-    loading.show();
+    $('#interface').hide();
     //Setup progressbar
+    text.text("Loading ...");
+
     bar.progressbar({
         value:0
+   
     });
     //Bind click event on button
     button.live('click',function(){
-        //Hide loading interface
-        loading.hide();
         //Start scene level 1
         Crafty.scene("Level1");  
     });
-   
+  
+    $('.skip').live('click',function(){
+        bar.fadeOut(1000,function(){
+            button.show();
+        });
+            
+    });
+    
     Crafty.load(toLoad,
         function() {
             //Everything is loaded
-            bar.fadeOut(2000,function(){
+            bar.fadeOut(1000,function(){
                 button.show();
             });
+            
         },
         function(e) {
             var src = e.src ||"";
@@ -46,23 +53,25 @@ Crafty.scene("Loading",function(){
             bar.progressbar({
                 value:~~e.percent
             });
+       
       
         },
         function(e) {
-        //uh oh, error loading
-         
+            //uh oh, error loading
+            var src = e.src ||"";
+            console.log("Error on loading: "+src.substr(src.lastIndexOf('/') + 1).toLowerCase());
         }
         );
-   Crafty.audio.play("gameover",-1);
+    Crafty.audio.play("intro",-1);
 },
 //Uninit Scene
 function(){
     Crafty.audio.stop();
+    //Display loading interface
+    $('#loading').hide();
 });
 //Level 1 Scene
 Crafty.scene("Level1",function(){
-    //Stop loading sound
-    Crafty.audio.stop();
     //Display interface
     $('#interface').show();
     //Setup background of level
@@ -155,9 +164,9 @@ Crafty.scene("Level1",function(){
     });
     //Global Event for Game Over
     Crafty.bind("GameOver",function(score){
-            Crafty.trigger("ShowText","Game Over!");
-            Crafty.audio.stop();
-            Crafty.audio.play("gameover",-1);
+        Crafty.trigger("ShowText","Game Over!");
+        Crafty.audio.stop();
+        Crafty.audio.play("gameover",-1);
             
     });
     //Play background music and repeat

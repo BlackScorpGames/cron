@@ -51,21 +51,21 @@ Crafty.extend({
 	*/
     load: function (data, oncomplete, onprogress, onerror) {
             
-        var i = 0, l = data.length, current, obj, total = l, j = 0, ext = "" ,audio,canplay;
+        var i = 0, l = data.length, current, obj, total = l, j = 0, ext = "" ;
   
         //Progress function
         function pro(){
             var src = this.src;
-            
+           
             //Remove events cause audio trigger this event more than once(depends on browser)
             if (this.removeEventListener) {  
-                this.removeEventListener('canplaythrough', pro, true);     
+                this.removeEventListener('canplaythrough', pro, false);     
             }
            
             ++j;
             //if progress callback, give information of assets loaded, total and percent
             if (onprogress) 
-                onprogress.call(this,{
+                onprogress({
                     loaded: j, 
                     total: total, 
                     percent: (j / total * 100),
@@ -78,7 +78,7 @@ Crafty.extend({
         function err(){
             var src = this.src;
             if (onerror) 
-                onerror.call(this,{
+                onerror({
                     loaded: j, 
                     total: total, 
                     percent: (j / total * 100),
@@ -94,7 +94,7 @@ Crafty.extend({
             ext = current.substr(current.lastIndexOf('.') + 1).toLowerCase();
            
             obj = this.assets[current] || null;   
-           
+          
             if (Crafty.support.audio && Crafty.audio.supported[ext]) {   
                 
                 if(!obj){
@@ -110,11 +110,12 @@ Crafty.extend({
                         played:0
                     } 
                 }
-              
+        
+                //addEventListener is supported on IE9 , Audio as well
                 if (obj.addEventListener) {  
-                    obj.addEventListener('canplaythrough', pro, true);     
+                    obj.addEventListener('canplaythrough', pro, false);     
                 }
-              
+                   
                  
             } else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") { 
                 if(!obj) {
